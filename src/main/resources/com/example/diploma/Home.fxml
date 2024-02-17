@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="homeScene" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="700.0" style="-fx-background-color: #2E3348;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.diploma.HomeController">
+    <children>
+      <TabPane prefHeight="393.0" prefWidth="701.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Projects">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextField fx:id="textFieldProjectName" layoutX="248.0" layoutY="87.0" promptText="project name" />
+                        <Button fx:id="CreateProjectButton" layoutX="274.0" layoutY="177.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="153.0" text="Создать проект" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Tasks">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="createTaskButton" layoutX="318.0" layoutY="268.0" mnemonicParsing="false" onAction="#create_task" text="Create task" />
+                        <TextField fx:id="nameField" layoutX="73.0" layoutY="79.0" />
+                        <DatePicker fx:id="dateField" layoutX="73.0" layoutY="162.0" />
+                        <ComboBox fx:id="usersField" layoutX="441.0" layoutY="162.0" prefWidth="150.0" />
+                        <ComboBox fx:id="projectsField" layoutX="441.0" layoutY="79.0" prefWidth="150.0" />
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="Untitled Tab">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+    </children>
+</AnchorPane>
