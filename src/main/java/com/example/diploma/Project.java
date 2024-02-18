@@ -2,15 +2,15 @@ package com.example.diploma;
 
 public class Project {
     private String projectName;
-    private int idUser;
-    private int idProject;
+    private int userId;
+    private int projectId;
 
-    public int getIdProject() {
-        return idProject;
+    public int getProjectId() {
+        return projectId;
     }
 
-    public void setIdProject(int idProject) {
-        this.idProject = idProject;
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
     }
 
     public Project(String projectName) {
@@ -25,11 +25,11 @@ public class Project {
         this.projectName = projectName;
     }
 
-    public int getIdUser() {
-        return idUser;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setIdUser(int idUser) {
-        this.idUser = idUser;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

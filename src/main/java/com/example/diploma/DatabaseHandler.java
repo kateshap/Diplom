@@ -22,19 +22,9 @@ public class DatabaseHandler extends Configs{
 
     }
 
-//    public Connection getDbConnection() throws ClassNotFoundException, SQLException{
-//        String connectionString = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName;
-//
-//        Class.forName("com.mysql.jdbc.Driver");
-//
-//        dbConnection = DriverManager.getConnection(connectionString, dbUser, dbPass);
-//
-//        return dbConnection;
-//    }
-
     public void signUpUser(User user) throws SQLException, ClassNotFoundException {
-        String insert = "INSERT INTO "+ Const.USER_TABLE+"("+Const.USER_FIRSTNAME+","+Const.USER_LASTNAME+","+Const.USER_LOGIN + ","+Const.USER_PASSWORD+","+Const.USER_EMAIL+","+ Const.USER_GENDER+")"+
-                "VALUES(?,?,?,?,?,?)";
+        String insert = "INSERT INTO "+ Const.USER_TABLE+"("+Const.USER_FIRSTNAME+","+Const.USER_LASTNAME+","+Const.USER_LOGIN + ","+Const.USER_PASSWORD+","+Const.USER_EMAIL+","+ Const.USER_GENDER+","+Const.USER_FULLNAME+")"+
+                "VALUES(?,?,?,?,?,?,?)";
 
         PreparedStatement prSt = dbConnection.prepareStatement(insert);
         prSt.setString(1,user.getFirstName());
@@ -43,6 +33,7 @@ public class DatabaseHandler extends Configs{
         prSt.setString(4,user.getPassword());
         prSt.setString(5,user.getEmail());
         prSt.setString(6,user.getGender());
+        prSt.setString(7,user.getFullname());
 
         prSt.executeUpdate();
     }
@@ -63,12 +54,12 @@ public class DatabaseHandler extends Configs{
     }
 
     public void createProject(Project project, int userId) throws SQLException, ClassNotFoundException {
-        String insert = "INSERT INTO "+ Const.PROJECT_TABLE+"("+Const.PROJECT_NAME+","+Const.PROJECT_ID_USER+")"+
+        String insert = "INSERT INTO "+ Const.PROJECT_TABLE+"("+Const.PROJECT_NAME+","+Const.PROJECT_USER_ID+")"+
                 "VALUES(?,?)";
 
         PreparedStatement prSt = dbConnection.prepareStatement(insert);
         prSt.setString(1,project.getProjectName());
-        prSt.setString(2, String.valueOf(userId));
+        prSt.setInt(2, userId);
         prSt.executeUpdate();
     }
 
@@ -83,8 +74,8 @@ public class DatabaseHandler extends Configs{
             while(r.next())
             {
                 var project = new Project(r.getString("name"));
-                project.setIdUser(r.getInt("iduser"));
-                project.setIdProject(r.getInt("idproject"));
+                project.setUserId(r.getInt("userid"));
+                project.setProjectId(r.getInt("projectid"));
                 res.add(project);
             }
         } catch (SQLException ex) { }
@@ -92,8 +83,8 @@ public class DatabaseHandler extends Configs{
         return res;
     }
 
-    public ArrayList<String> getAllUsers() {
-        ArrayList<String> res = new ArrayList<>();
+    public ArrayList<User> getAllUsers() {
+        ArrayList<User> res = new ArrayList<>();
 
         try {
             Statement st = dbConnection.createStatement();
@@ -101,11 +92,27 @@ public class DatabaseHandler extends Configs{
 
             while(r.next())
             {
-                res.add(r.getString("fullname"));
+                var user = new User(r.getString("firstname"),r.getString("lastname"),r.getString("login"),
+                        r.getString("password"), r.getString("email"), r.getString("gender"),r.getString("fullname"));
+                user.setUserId(r.getInt("userid"));
+                res.add(user);
             }
 
         } catch (SQLException ex) { }
 
         return res;
+    }
+
+    public void createTask(Task task) throws SQLException, ClassNotFoundException {
+        String insert = "INSERT INTO "+ Const.TASK_TABLE+"("+Const.TASK_NAME+","+Const.TASK_EXECUTE_DATE+","+Const.TASK_PROJECT_ID+","
+                +Const.TASK_USER_ID+","+Const.TASK_STATUS + ")"+ "VALUES(?,?,?,?,?)";
+
+        PreparedStatement prSt = dbConnection.prepareStatement(insert);
+        prSt.setString(1,task.getTaskName());
+        prSt.setDate(2, Date.valueOf(task.getExecuteDate()));
+        prSt.setInt(3,task.getProjectId());
+        prSt.setInt(4, task.getUserId());
+        prSt.setString(5,task.getStatus());
+        prSt.executeUpdate();
     }
 }

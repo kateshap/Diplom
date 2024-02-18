@@ -5,5 +5,6 @@ public enum ClientsAction {
     SIGNIN,
     CREATEPROJECT,
     GETUSERS,
-    GETPROJECTS
+    GETPROJECTS,
+    CREATETASK
 }

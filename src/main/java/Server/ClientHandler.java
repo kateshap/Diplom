@@ -1,6 +1,7 @@
 package Server;
 
 import com.example.diploma.Project;
+import com.example.diploma.User;
 import com.google.gson.Gson;
 import model.Model;
 import model.ModelBuilder;
@@ -71,11 +72,15 @@ public class ClientHandler implements Runnable {
                         break;
                     }
                     case GETUSERS:{
-                        ArrayList<String> users;
+                        ArrayList<User> users;
                         users=model.getDb().getAllUsers();
                         Response resp = new Response();
                         resp.setUsers(users);
                         sender.sendResp(resp);
+                        break;
+                    }
+                    case CREATETASK: {
+                        model.getDb().createTask(msg.getTask());
                         break;
                     }
                 }

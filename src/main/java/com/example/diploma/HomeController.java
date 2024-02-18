@@ -1,12 +1,9 @@
 package com.example.diploma;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.Socket;
-import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -49,20 +46,20 @@ public class HomeController {
     Sender sender;
     ArrayList<String> projectName=new ArrayList<String>();
     ArrayList<Project> projects;
+    ArrayList<String> userFullName=new ArrayList<String>();
+    ArrayList<User> users;
 
 
     @FXML
     void initialize() throws IOException {
         socket = Data.socket;
 
-        Sender sender = new Sender(socket);
+        sender = new Sender(socket);
         Request req = new Request(ClientsAction.GETPROJECTS);
         sender.sendRequest(req);
-
         Response msg = sender.getResp();
 
         projects=msg.getProjects();
-
 
         for (Project project : projects) {
             projectName.add(project.getProjectName());
@@ -73,12 +70,14 @@ public class HomeController {
 
         req = new Request(ClientsAction.GETUSERS);
         sender.sendRequest(req);
-
         msg = sender.getResp();
+        users=msg.getUsers();
 
-        ArrayList<String> users=msg.getUsers();
+        for (User user : users) {
+            userFullName.add(user.getFullname());
+        }
 
-        ObservableList<String> userItems = FXCollections.observableArrayList(users);
+        ObservableList<String> userItems = FXCollections.observableArrayList(userFullName);
         usersField.setItems(userItems);
 
         CreateProjectButton.setOnAction(event ->{
@@ -96,25 +95,32 @@ public class HomeController {
     @FXML
     void create_task(ActionEvent event) {
         String taskName = nameField.getText();
-        String date = dateField.getEditor().getText();
-        String projectName = projectsField.getSelectionModel().getSelectedItem().toString();
-        String userName = usersField.getSelectionModel().getSelectedItem().toString();
+        LocalDate date = dateField.getValue();
+        String projectNameItem = projectsField.getSelectionModel().getSelectedItem().toString();
+        String userNameItem = usersField.getSelectionModel().getSelectedItem().toString();
 
-        int iduser;
+        int projectId=0;
 
         for (Project project : projects) {
-            if(project.getProjectName().equals(projectName)){
-                iduser=project.getIdUser();
+            if(project.getProjectName().equals(projectNameItem)){
+                projectId=project.getProjectId();
             }
         }
 
-        //Task task=new Task(taskName,date, );
+        int userId=0;
 
-//        Sender sender = new Sender(socket);
-//        Request req = new Request(ClientsAction.CREATEPROJECT, project);
-//        sender.sendRequest(req);
+        for (User user : users) {
+            if(user.getFullname().equals(userNameItem)){
+                userId=user.getUserId();
+            }
+        }
+
+        Task task=new Task(taskName,date, projectId,userId,"назначена" );
 
 
+        Sender sender = new Sender(socket);
+        Request req = new Request(ClientsAction.CREATETASK, task);
+        sender.sendRequest(req);
     }
 
     private void createNewProject() throws IOException {

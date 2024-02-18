@@ -98,7 +98,7 @@ public class Server {
             result = model.getDb().getUser(msg.getUser());
             result.next();
             c.setUserName(result.getString("firstname"));
-            c.setUserId(result.getInt("idusers"));
+            c.setUserId(result.getInt("userid"));
             allClients.add(c);
             service.submit(c);
             return true;

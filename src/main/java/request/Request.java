@@ -1,12 +1,27 @@
 package request;
 
 import com.example.diploma.Project;
+import com.example.diploma.Task;
 import com.example.diploma.User;
 
 public class Request {
     ClientsAction clientsAction;
     User user;
     Project project;
+    Task task;
+
+    public Request(ClientsAction clientsAction, Task task) {
+        this.clientsAction = clientsAction;
+        this.task = task;
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
 
     public void setClientsAction(ClientsAction clientsAction) {
         this.clientsAction = clientsAction;

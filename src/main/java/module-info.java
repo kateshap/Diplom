@@ -16,4 +16,5 @@ module com.example.diploma {
     opens request to javafx.fxml, com.google.gson;
     opens Server to javafx.fxml, com.google.gson;
     exports com.example.diploma;
+    exports request;
 }

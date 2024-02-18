@@ -95,7 +95,7 @@ public class SignUpController {
             gender = "Мужской";
         else
             gender = "Женский";
-        User user = new User(firstName, lastName, login, password, email,gender);
+        User user = new User(firstName, lastName, login, password, gender, email,lastName+" "+firstName);
 
         Sender sender = new Sender(socket);
         Request req = new Request(ClientsAction.SIGNUP, user);
@@ -104,6 +104,8 @@ public class SignUpController {
         Response msg = sender.getResp();
 
         if (msg.getServReaction() == ServReaction.SUCCESS) {
+
+            //openNewScene("/com/example/diploma/Home.fxml");
             openNewScene("/com/example/diploma/Home.fxml");
         }
     }

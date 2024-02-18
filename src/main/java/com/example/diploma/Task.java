@@ -1,15 +1,16 @@
 package com.example.diploma;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Task {
     private String taskName;
-    private Date executeDate;
+    private LocalDate executeDate;
     private int projectId;
     private int userId;
     private String status;
 
-    public Task(String taskName, Date executeDate, int projectId, int userId, String status) {
+    public Task(String taskName, LocalDate executeDate, int projectId, int userId, String status) {
         this.taskName = taskName;
         this.executeDate = executeDate;
         this.projectId = projectId;
@@ -25,11 +26,11 @@ public class Task {
         this.taskName = taskName;
     }
 
-    public Date getExecuteDate() {
+    public LocalDate getExecuteDate() {
         return executeDate;
     }
 
-    public void setExecuteDate(Date executeDate) {
+    public void setExecuteDate(LocalDate executeDate) {
         this.executeDate = executeDate;
     }
 

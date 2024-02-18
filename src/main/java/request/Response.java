@@ -1,21 +1,22 @@
 package request;
 
 import com.example.diploma.Project;
+import com.example.diploma.User;
 
 import java.util.ArrayList;
 
 public class Response {
     ServReaction servReaction;
     ArrayList<Project> projects;
-    ArrayList<String> users;
+    ArrayList<User> users;
 
     public Response() {}
 
-    public ArrayList<String> getUsers() {
+    public ArrayList<User> getUsers() {
         return users;
     }
 
-    public void setUsers(ArrayList<String> users) {
+    public void setUsers(ArrayList<User> users) {
         this.users = users;
     }
 

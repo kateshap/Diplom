@@ -9,17 +9,27 @@ public class User {
     private String password;
     private String email;
     private String gender;
-    private String userId;
+    private int userId;
+    private String fullname;
 
-    public String getUserId() {
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
-    public User(String firstName, String lastName, String login, String password, String gender, String email) {
+    public User(String firstName, String lastName, String login, String password, String gender, String email,String fullname) {
+        this.fullname=fullname;
         this.firstName = firstName;
         this.lastName = lastName;
         this.login = login;
