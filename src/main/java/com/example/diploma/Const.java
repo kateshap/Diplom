@@ -23,4 +23,10 @@ public class Const {
     public static final String TASK_PROJECT_ID = "projectid";
     public static final String TASK_USER_ID = "userid";
     public static final String TASK_STATUS = "status";
+
+    public static final String PROJECTUSER_TABLE = "projectusers";
+    public static final String PROJECTUSER_ID = "projectusersid";
+    public static final String PROJECTUSER_USER_ID = "userid";
+    public static final String PROJECTUSER_PROJECT_ID = "projectid";
+    public static final String PROJECTUSER_ROLE = "role";
 }

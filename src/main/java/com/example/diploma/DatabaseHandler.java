@@ -64,12 +64,35 @@ public class DatabaseHandler extends Configs{
     }
 
 
-    public ArrayList<Project> getAllProjects() {
+    public ArrayList<Project> getProjectsByAuthor(int iserId) {//получить все проекты для выпадающего списка по руководителю проекта
         ArrayList<Project> res = new ArrayList<>();
+        ResultSet r = null;
 
         try {
-            Statement st = dbConnection.createStatement();
-            ResultSet r = st.executeQuery("select * from projects ORDER BY name");
+            PreparedStatement st = dbConnection.prepareStatement("select * from projects where " + Const.PROJECT_USER_ID+"=?");
+            st.setInt(1,iserId);
+            r = st.executeQuery();
+
+
+            while(r.next()){
+                var project = new Project(r.getString("name"));
+                project.setUserId(r.getInt("userid"));
+                project.setProjectId(r.getInt("projectid"));
+                res.add(project);
+            }
+        } catch (SQLException ex) { }
+
+        return res;
+    }
+
+    public ArrayList<Project> getProjectsByUser(int userId) {//получить все проекты участника для вкладки
+        ArrayList<Project> res = new ArrayList<>();
+        ResultSet r = null;
+
+        try {
+            PreparedStatement st = dbConnection.prepareStatement(" select p.* from projectusers as pu left join projects as p on pu.projectid=p.projectid where pu.userid=?");
+            st.setInt(1,userId);
+            r = st.executeQuery();
 
             while(r.next())
             {
@@ -81,6 +104,59 @@ public class DatabaseHandler extends Configs{
         } catch (SQLException ex) { }
 
         return res;
+    }
+
+
+    public ArrayList<User> getUsersByProject(Project project) {//получить всех участников выбранного проекта для вкладки
+        ArrayList<User> res = new ArrayList<>();
+        ResultSet r = null;
+
+        try {
+            PreparedStatement st = dbConnection.prepareStatement(" select u.* from projectusers as pu left join users as u on pu.userid=u.userid where pu.projectid=?");
+            st.setInt(1,project.getProjectId());
+            r = st.executeQuery();
+
+            while(r.next())
+            {
+                var user = new User();
+                user.setFullname(r.getString("fullname"));
+                user.setUserId(r.getInt("userid"));
+                res.add(user);
+            }
+        } catch (SQLException ex) { }
+
+        return res;
+    }
+//    public ArrayList<Project> getAllProjects() {//получить все проекты
+//        ArrayList<Project> res = new ArrayList<>();
+//
+//        try {
+//            Statement st = dbConnection.createStatement();
+//            ResultSet r = st.executeQuery("select * from projects ORDER BY name");
+//
+//            while(r.next())
+//            {
+//                var project = new Project(r.getString("name"));
+//                project.setUserId(r.getInt("userid"));
+//                project.setProjectId(r.getInt("projectid"));
+//                res.add(project);
+//            }
+//        } catch (SQLException ex) { }
+//
+//        return res;
+//    }
+
+    //INSERT INTO `diploma`.`projectusers` (`projectusersid`, `userid`, `projectid`) VALUES ('6', '3', '7');
+    public void addProjectUsers(ProjectUsers projectUsers) throws SQLException, ClassNotFoundException {
+        String insert = "INSERT INTO "+ Const.PROJECTUSER_TABLE+"("+Const.PROJECTUSER_ID+","+Const.PROJECTUSER_USER_ID+","+Const.PROJECTUSER_PROJECT_ID+")"+
+                "VALUES(?,?,?)";
+
+        PreparedStatement prSt = dbConnection.prepareStatement(insert);
+        prSt.setInt(1,projectUsers.getProjectusersid());
+        prSt.setInt(2,projectUsers.getUserid());
+        prSt.setInt(3,projectUsers.getProjectid());
+
+        prSt.executeUpdate();
     }
 
     public ArrayList<User> getAllUsers() {

@@ -64,10 +64,25 @@ public class ClientHandler implements Runnable {
                         model.getDb().createProject(msg.getProject(), UserId);
                         break;
                     }
-                    case GETPROJECTS:{
-                        ArrayList<Project> projects=new ArrayList<Project>();
-                        projects=model.getDb().getAllProjects();
+                    case GETPROJECTSBYAUTHOR:{
+                        ArrayList<Project> projects;
+                        projects=model.getDb().getProjectsByAuthor(UserId);
                         Response resp = new Response(projects);
+                        sender.sendResp(resp);
+                        break;
+                    }
+                    case GETPROJECTSBYUSER:{
+                        ArrayList<Project> projects;
+                        projects=model.getDb().getProjectsByUser(UserId);
+                        Response resp = new Response(projects);
+                        sender.sendResp(resp);
+                        break;
+                    }
+                    case GETUSERSBYPROJECT:{
+                        ArrayList<User> users;
+                        users=model.getDb().getUsersByProject(msg.getProject());
+                        Response resp = new Response();
+                        resp.setUsers(users);
                         sender.sendResp(resp);
                         break;
                     }
@@ -83,6 +98,11 @@ public class ClientHandler implements Runnable {
                         model.getDb().createTask(msg.getTask());
                         break;
                     }
+                    case ADDPROJECTUSERS: {
+                        model.getDb().addProjectUsers(msg.getProjectUsers());
+                        break;
+                    }
+
                 }
 
                 //обработка других действий клиента, кроме регистрации и входа

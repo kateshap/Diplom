@@ -9,10 +9,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import request.*;
 
@@ -41,31 +39,48 @@ public class HomeController {
 
     @FXML
     private ComboBox projectsField;
+    @FXML
+    private ListView<String> listViewField;
+
+    @FXML
+    private ComboBox usersFieldOnCreateProject;
+
+    @FXML
+    private ComboBox projectsFieldOnCreateProject;
+
+    @FXML
+    private Button AddUserButton;
+
 
     private Socket socket;
     Sender sender;
-    ArrayList<String> projectName=new ArrayList<String>();
-    ArrayList<Project> projects;
+    ArrayList<String> projectNameByAuthor=new ArrayList<String>();
+    ArrayList<String> projectNameByUser=new ArrayList<String>();
+    ArrayList<Project> projectsByAuthor;
+    ArrayList<Project> projectsByUser;
     ArrayList<String> userFullName=new ArrayList<String>();
+    ArrayList<String> userFullNameOnCreateProject=new ArrayList<String>();
     ArrayList<User> users;
-
+    ArrayList<User> usersOnCreateProject;
+    Request req;
+    Response msg;
 
     @FXML
     void initialize() throws IOException {
         socket = Data.socket;
 
         sender = new Sender(socket);
-        Request req = new Request(ClientsAction.GETPROJECTS);
+        req = new Request(ClientsAction.GETPROJECTSBYAUTHOR);
         sender.sendRequest(req);
-        Response msg = sender.getResp();
+        msg = sender.getResp();
 
-        projects=msg.getProjects();
+        projectsByAuthor=msg.getProjects();
 
-        for (Project project : projects) {
-            projectName.add(project.getProjectName());
+        for (Project project : projectsByAuthor) {
+            projectNameByAuthor.add(project.getProjectName());
         }
 
-        ObservableList<String> projectItems = FXCollections.observableArrayList(projectName);
+        ObservableList<String> projectItems = FXCollections.observableArrayList(projectNameByAuthor);
         projectsField.setItems(projectItems);
 
         req = new Request(ClientsAction.GETUSERS);
@@ -79,6 +94,11 @@ public class HomeController {
 
         ObservableList<String> userItems = FXCollections.observableArrayList(userFullName);
         usersField.setItems(userItems);
+        //usersFieldOnCreateProject.setItems(userItems);
+
+        projectsFieldOnCreateProject.setItems(projectItems);
+
+
 
         CreateProjectButton.setOnAction(event ->{
             try {
@@ -90,6 +110,73 @@ public class HomeController {
             //SignIn.fxml
         });
 
+        sender = new Sender(socket);
+        req = new Request(ClientsAction.GETPROJECTSBYUSER);
+        sender.sendRequest(req);
+        msg = sender.getResp();
+
+        projectsByUser=msg.getProjects();
+
+        for (Project project : projectsByUser) {
+            projectNameByUser.add(project.getProjectName());
+        }
+
+        ObservableList<String> allProjects = FXCollections.observableArrayList(projectNameByUser);
+        listViewField.setItems(allProjects);
+    }
+
+
+    @FXML
+    void updateUsers(MouseEvent event) throws IOException {
+        usersFieldOnCreateProject.getItems().clear();
+        userFullNameOnCreateProject.clear();
+        String projectItem = projectsFieldOnCreateProject.getSelectionModel().getSelectedItem().toString();
+        int projectId=0;
+
+        for (Project project : projectsByAuthor) {
+            if(project.getProjectName().equals(projectItem)){
+                projectId=project.getProjectId();
+            }
+        }
+        Project project=new Project(projectId);
+
+        req = new Request(ClientsAction.GETUSERSBYPROJECT,project);
+        sender.sendRequest(req);
+        msg = sender.getResp();
+        usersOnCreateProject=msg.getUsers();
+
+        for (User user : usersOnCreateProject) {
+            userFullNameOnCreateProject.add(user.getFullname());
+        }
+        ObservableList<String> userItemsOnCreateProject = FXCollections.observableArrayList(userFullNameOnCreateProject);
+        usersFieldOnCreateProject.setItems(userItemsOnCreateProject);
+
+    }
+
+    @FXML
+    void addProjectUsers(ActionEvent event) {
+        String projectItem = projectsFieldOnCreateProject.getSelectionModel().getSelectedItem().toString();
+        String userItem = usersFieldOnCreateProject.getSelectionModel().getSelectedItem().toString();
+        int projectId=0;
+
+        for (Project project : projectsByAuthor) {
+            if(project.getProjectName().equals(projectItem)){
+                projectId=project.getProjectId();
+            }
+        }
+
+        int userId=0;
+
+        for (User user : usersOnCreateProject) {
+            if(user.getFullname().equals(userItem)){
+                userId=user.getUserId();
+            }
+        }
+
+        ProjectUsers projectUsers=new ProjectUsers(userId, projectId);
+        Sender sender = new Sender(socket);
+        Request req = new Request(ClientsAction.ADDPROJECTUSERS, projectUsers);
+        sender.sendRequest(req);
     }
 
     @FXML
@@ -101,7 +188,7 @@ public class HomeController {
 
         int projectId=0;
 
-        for (Project project : projects) {
+        for (Project project : projectsByAuthor) {
             if(project.getProjectName().equals(projectNameItem)){
                 projectId=project.getProjectId();
             }

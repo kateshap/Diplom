@@ -1,6 +1,7 @@
 package request;
 
 import com.example.diploma.Project;
+import com.example.diploma.ProjectUsers;
 import com.example.diploma.Task;
 import com.example.diploma.User;
 
@@ -9,6 +10,20 @@ public class Request {
     User user;
     Project project;
     Task task;
+    ProjectUsers projectUsers;
+
+    public Request(ClientsAction clientsAction,  ProjectUsers projectUsers) {
+        this.clientsAction = clientsAction;
+        this.projectUsers = projectUsers;
+    }
+
+    public ProjectUsers getProjectUsers() {
+        return projectUsers;
+    }
+
+    public void setProjectUsers(ProjectUsers projectUsers) {
+        this.projectUsers = projectUsers;
+    }
 
     public Request(ClientsAction clientsAction, Task task) {
         this.clientsAction = clientsAction;

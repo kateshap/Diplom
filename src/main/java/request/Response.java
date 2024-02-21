@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class Response {
     ServReaction servReaction;
-    ArrayList<Project> projects;
-    ArrayList<User> users;
+    ArrayList<Project> projects=new ArrayList<Project>();
+    ArrayList<User> users=new ArrayList<User>();
 
     public Response() {}
 
