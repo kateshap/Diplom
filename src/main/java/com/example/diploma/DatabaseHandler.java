@@ -1,6 +1,8 @@
 package com.example.diploma;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -107,6 +109,28 @@ public class DatabaseHandler extends Configs{
     }
 
 
+    public ArrayList<Task> getTasksByUser(int userId) {//получить все проекты участника для вкладки
+        ArrayList<Task> res = new ArrayList<>();
+        ResultSet r = null;
+
+        try {
+            PreparedStatement st = dbConnection.prepareStatement(" select * from tasks where userid=?");
+            st.setInt(1,userId);
+            r = st.executeQuery();
+
+            while(r.next())
+            {
+                var task = new Task(r.getInt("taskid"),r.getString("name"),new java.sql.Date(r.getDate("executedate").getTime()).toLocalDate(),
+                        r.getInt("projectid"),r.getInt("userid"),r.getString("status"));
+                res.add(task);
+            }
+        } catch (SQLException ex) { }
+
+        return res;
+    }
+
+
+
     public ArrayList<User> getUsersByProject(Project project) {//получить всех участников выбранного проекта для вкладки
         ArrayList<User> res = new ArrayList<>();
         ResultSet r = null;
@@ -146,7 +170,6 @@ public class DatabaseHandler extends Configs{
 //        return res;
 //    }
 
-    //INSERT INTO `diploma`.`projectusers` (`projectusersid`, `userid`, `projectid`) VALUES ('6', '3', '7');
     public void addProjectUsers(ProjectUsers projectUsers) throws SQLException, ClassNotFoundException {
         String insert = "INSERT INTO "+ Const.PROJECTUSER_TABLE+"("+Const.PROJECTUSER_ID+","+Const.PROJECTUSER_USER_ID+","+Const.PROJECTUSER_PROJECT_ID+")"+
                 "VALUES(?,?,?)";
@@ -191,4 +214,14 @@ public class DatabaseHandler extends Configs{
         prSt.setString(5,task.getStatus());
         prSt.executeUpdate();
     }
+
+    public void updateStatus(Task task) throws SQLException, ClassNotFoundException {
+        String update = "update tasks set status =? where taskid =?";
+
+        PreparedStatement prSt = dbConnection.prepareStatement(update);
+        prSt.setString(1,task.getStatus());
+        prSt.setInt(2, task.getTaskId());
+        prSt.executeUpdate();
+    }
+
 }

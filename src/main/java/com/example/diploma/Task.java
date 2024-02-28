@@ -4,11 +4,14 @@ import java.time.LocalDate;
 import java.util.Date;
 
 public class Task {
+    private int taskId;
     private String taskName;
     private LocalDate executeDate;
     private int projectId;
     private int userId;
     private String status;
+
+    public Task(){ }
 
     public Task(String taskName, LocalDate executeDate, int projectId, int userId, String status) {
         this.taskName = taskName;
@@ -18,9 +21,28 @@ public class Task {
         this.status = status;
     }
 
-    public String getTaskName() {
-        return taskName;
+    public Task(int taskId, String taskName, LocalDate executeDate, int projectId, int userId, String status) {
+        this.taskId = taskId;
+        this.taskName = taskName;
+        this.executeDate = executeDate;
+        this.projectId = projectId;
+        this.userId = userId;
+        this.status = status;
     }
+
+    public Task(String taskName, int projectId, int userId, String status) {
+        this.taskName = taskName;
+        this.projectId = projectId;
+        this.userId = userId;
+        this.status = status;
+    }
+
+    public int getTaskId() { return taskId; }
+
+    public void setTaskId(int taskId) { this.taskId = taskId; }
+
+
+    public String getTaskName() { return taskName;}
 
     public void setTaskName(String taskName) {
         this.taskName = taskName;

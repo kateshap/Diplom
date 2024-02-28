@@ -1,6 +1,7 @@
 package request;
 
 import com.example.diploma.Project;
+import com.example.diploma.Task;
 import com.example.diploma.User;
 
 import java.util.ArrayList;
@@ -8,7 +9,19 @@ import java.util.ArrayList;
 public class Response {
     ServReaction servReaction;
     ArrayList<Project> projects=new ArrayList<Project>();
+
     ArrayList<User> users=new ArrayList<User>();
+    ArrayList<Task> tasks=new ArrayList<Task>();
+
+
+
+    public ArrayList<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(ArrayList<Task> tasks) {
+        this.tasks = tasks;
+    }
 
     public Response() {}
 

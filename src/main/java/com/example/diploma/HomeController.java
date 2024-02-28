@@ -51,13 +51,21 @@ public class HomeController {
     @FXML
     private Button AddUserButton;
 
+    @FXML
+    private ComboBox taskForStatusField;
+
+    @FXML
+    private Button changeStatus;
+
 
     private Socket socket;
     Sender sender;
     ArrayList<String> projectNameByAuthor=new ArrayList<String>();
     ArrayList<String> projectNameByUser=new ArrayList<String>();
+    ArrayList<String> taskNameByUser=new ArrayList<String>();
     ArrayList<Project> projectsByAuthor;
     ArrayList<Project> projectsByUser;
+    ArrayList<Task> tasksByUser;
     ArrayList<String> userFullName=new ArrayList<String>();
     ArrayList<String> userFullNameOnCreateProject=new ArrayList<String>();
     ArrayList<User> users;
@@ -123,6 +131,20 @@ public class HomeController {
 
         ObservableList<String> allProjects = FXCollections.observableArrayList(projectNameByUser);
         listViewField.setItems(allProjects);
+
+        sender = new Sender(socket);
+        req = new Request(ClientsAction.GETTASKSBYUSER);
+        sender.sendRequest(req);
+        msg = sender.getResp();
+
+        tasksByUser=msg.getTasks();
+
+        for (Task task : tasksByUser) {
+            taskNameByUser.add(task.getTaskName());
+        }
+
+        ObservableList<String> listTasksByUser = FXCollections.observableArrayList(taskNameByUser);
+        taskForStatusField.setItems(listTasksByUser);
     }
 
 
@@ -225,5 +247,28 @@ public class HomeController {
 //        if (msg.getServReaction() == ServReaction.SUCCESS) {
 //            openNewScene("/com/example/diploma/Home.fxml");
 //        }
+    }
+
+    @FXML
+    void change_status(ActionEvent event) {
+        String taskName = taskForStatusField.getSelectionModel().getSelectedItem().toString();
+
+        int taskId=0;
+
+        for (Task task : tasksByUser) {
+            if(task.getTaskName().equals(taskName)){
+                taskId=task.getTaskId();
+            }
+        }
+        String status = "выполнена";
+
+        Task task=new Task();
+        task.setTaskId(taskId);
+        task.setTaskName(taskName);
+        task.setStatus(status);
+
+        Sender sender = new Sender(socket);
+        Request req = new Request(ClientsAction.UPDATESTATUS, task);
+        sender.sendRequest(req);
     }
 }

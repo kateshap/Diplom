@@ -24,13 +24,6 @@ public class Sender {
         } catch (IOException ex) {  }
     }
 
-//    public void sendRequest(Request req)
-//    {
-//        try {
-//            String s = gson.toJson(req);
-//            dos.writeUTF(s);
-//        } catch (IOException ex) { }
-//    }
 
     public void sendRequest(Request req)
     {
@@ -67,6 +60,9 @@ public class Sender {
     public void sendResp(Response resp)
     {
         try {
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+                    .create();
             String s = gson.toJson(resp);
             dos.writeUTF(s);
         } catch (IOException ex) { }
@@ -74,6 +70,9 @@ public class Sender {
 
 
     public Response getResp() throws IOException {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+                .create();
         String s = dis.readUTF();
         return gson.fromJson(s, Response.class);
     }

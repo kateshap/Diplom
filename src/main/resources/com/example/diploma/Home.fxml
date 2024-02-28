@@ -17,11 +17,11 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextField fx:id="textFieldProjectName" layoutX="108.0" layoutY="87.0" promptText="project name" />
-                        <Button fx:id="CreateProjectButton" layoutX="125.0" layoutY="268.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="153.0" text="Создать проект" />
-                        <ComboBox fx:id="usersFieldOnCreateProject" layoutX="447.0" layoutY="87.0" onMouseClicked="#updateUsers" prefWidth="150.0" />
-                        <ComboBox fx:id="projectsFieldOnCreateProject" layoutX="447.0" layoutY="183.0" prefWidth="150.0" />
-                        <Button fx:id="AddUserButton" layoutX="441.0" layoutY="268.0" mnemonicParsing="false" onAction="#addProjectUsers" prefHeight="43.0" prefWidth="162.0" text="Добавить участника" />
+                        <TextField fx:id="textFieldProjectName" layoutX="54.0" layoutY="42.0" promptText="project name" />
+                        <Button fx:id="CreateProjectButton" layoutX="64.0" layoutY="178.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="153.0" text="Создать проект" />
+                        <ComboBox fx:id="usersFieldOnCreateProject" layoutX="447.0" layoutY="42.0" onMouseClicked="#updateUsers" prefWidth="150.0" promptText="users field" />
+                        <ComboBox fx:id="projectsFieldOnCreateProject" layoutX="447.0" layoutY="118.0" prefWidth="150.0" promptText="projects field" />
+                        <Button fx:id="AddUserButton" layoutX="441.0" layoutY="178.0" mnemonicParsing="false" onAction="#addProjectUsers" prefHeight="43.0" prefWidth="162.0" text="Добавить участника" />
                      </children>
                   </AnchorPane>
             </content>
@@ -30,11 +30,13 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Button fx:id="createTaskButton" layoutX="318.0" layoutY="268.0" mnemonicParsing="false" onAction="#create_task" text="Create task" />
-                        <TextField fx:id="nameField" layoutX="73.0" layoutY="79.0" />
-                        <DatePicker fx:id="dateField" layoutX="73.0" layoutY="162.0" />
-                        <ComboBox fx:id="usersField" layoutX="441.0" layoutY="162.0" prefWidth="150.0" />
-                        <ComboBox fx:id="projectsField" layoutX="441.0" layoutY="79.0" prefWidth="150.0" />
+                        <Button fx:id="createTaskButton" layoutX="304.0" layoutY="142.0" mnemonicParsing="false" onAction="#create_task" text="Create task" />
+                        <TextField fx:id="nameField" layoutX="33.0" layoutY="48.0" promptText="task's name" />
+                        <DatePicker fx:id="dateField" layoutX="33.0" layoutY="111.0" prefHeight="31.0" prefWidth="155.0" />
+                        <ComboBox fx:id="usersField" layoutX="514.0" layoutY="48.0" prefWidth="150.0" promptText="user's name" />
+                        <ComboBox fx:id="projectsField" layoutX="279.0" layoutY="48.0" prefHeight="31.0" prefWidth="173.0" promptText="project's name" />
+                        <ComboBox fx:id="taskForStatusField" layoutX="33.0" layoutY="267.0" prefWidth="150.0" promptText="task's name" />
+                        <Button fx:id="changeStatus" layoutX="294.0" layoutY="267.0" mnemonicParsing="false" onAction="#change_status" text="Change status" />
                      </children></AnchorPane>
             </content>
           </Tab>
