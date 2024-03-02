@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
@@ -7,7 +8,10 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane fx:id="homeScene" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="700.0" style="-fx-background-color: #2E3348;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.diploma.HomeController">
     <children>
@@ -50,7 +54,110 @@
             </Tab>
             <Tab text="AllTasks">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ImageView fx:id="menu" fitHeight="43.0" fitWidth="57.0" pickOnBounds="true" preserveRatio="true" x="100.0" AnchorPane.bottomAnchor="303.0" AnchorPane.leftAnchor="621.0" AnchorPane.rightAnchor="37.0">
+                           <image>
+                              <Image url="@icons/menu.png" />
+                           </image>
+                        </ImageView>
+                        <AnchorPane layoutY="-1.0" prefHeight="360.0" prefWidth="48.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="653.0">
+                           <children>
+                              <VBox layoutX="13.0" layoutY="9.0" prefHeight="342.0" prefWidth="56.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="-8.0">
+                                 <children>
+                                    <ImageView fitHeight="42.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@icons/icons8-profile-64.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fitHeight="40.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@icons/icons8-project-64.png" />
+                                       </image>
+                                       <VBox.margin>
+                                          <Insets top="10.0" />
+                                       </VBox.margin>
+                                    </ImageView>
+                                    <ImageView fitHeight="37.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@icons/icons8-task-64.png" />
+                                       </image>
+                                       <VBox.margin>
+                                          <Insets top="20.0" />
+                                       </VBox.margin>
+                                    </ImageView>
+                                    <ImageView fitHeight="35.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@icons/icons8-service-64.png" />
+                                       </image>
+                                       <VBox.margin>
+                                          <Insets top="130.0" />
+                                       </VBox.margin>
+                                    </ImageView>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="buttonPane" prefHeight="356.0" prefWidth="148.0" />
+                        <AnchorPane fx:id="blackPane" prefHeight="358.0" prefWidth="701.0" style="-fx-background-color: #b2ebf2;">
+                           <children>
+                              <VBox layoutX="56.0" layoutY="14.0" prefHeight="359.0" prefWidth="151.0" spacing="25.0">
+                                 <children>
+                                    <Button alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="31.0" prefWidth="152.0" style="-fx-background-color: #b2ebf2;" text="Профиль" textFill="#030022" />
+                                    <Button alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="31.0" prefWidth="150.0" style="-fx-background-color: #b2ebf2;" text="Проекты" textFill="#030022">
+                                       <VBox.margin>
+                                          <Insets top="3.0" />
+                                       </VBox.margin></Button>
+                                    <Button alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="31.0" prefWidth="152.0" style="-fx-background-color: #b2ebf2 #b2ebf2;" text="Задачи" textFill="#030022">
+                                       <VBox.margin>
+                                          <Insets />
+                                       </VBox.margin></Button>
+                                    <Button alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="31.0" prefWidth="154.0" style="-fx-background-color: #b2ebf2 #b2ebf2;" text="Настройки" textFill="#030022">
+                                       <VBox.margin>
+                                          <Insets top="130.0" />
+                                       </VBox.margin></Button>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="360.0" prefWidth="48.0">
+                           <children>
+                              <VBox layoutX="13.0" layoutY="9.0" prefHeight="342.0" prefWidth="56.0" spacing="15.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="-8.0">
+                                 <children>
+                                    <ImageView fitHeight="42.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@icons/icons8-profile-64.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fitHeight="40.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@icons/icons8-project-64.png" />
+                                       </image>
+                                       <VBox.margin>
+                                          <Insets />
+                                       </VBox.margin>
+                                    </ImageView>
+                                    <ImageView fitHeight="37.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@icons/icons8-task-64.png" />
+                                       </image>
+                                       <VBox.margin>
+                                          <Insets top="5.0" />
+                                       </VBox.margin>
+                                    </ImageView>
+                                    <ImageView fitHeight="35.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@icons/icons8-service-64.png" />
+                                       </image>
+                                       <VBox.margin>
+                                          <Insets top="130.0" />
+                                       </VBox.margin>
+                                    </ImageView>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                     </children></AnchorPane>
               </content>
             </Tab>
         </tabs>

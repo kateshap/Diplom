@@ -12,6 +12,7 @@ module com.example.diploma {
     requires java.sql;
     requires com.google.gson;
 
+
     opens com.example.diploma to javafx.fxml, com.google.gson;
     opens request to javafx.fxml, com.google.gson;
     opens Server to javafx.fxml, com.google.gson;
