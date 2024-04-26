@@ -93,7 +93,7 @@ public class Server {
 
         sender.sendResp(resp);
         if (resp.getServReaction() == ServReaction.SUCCESS) {
-            ClientHandler c = new ClientHandler(sock, msg.getUser().getFirstName());
+            ClientHandler c = new ClientHandler(sock, msg.getUser().getFirstName(),allClients);
 
             result = model.getDb().getUser(msg.getUser());
             result.next();

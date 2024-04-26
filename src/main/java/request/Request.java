@@ -11,8 +11,17 @@ public class Request {
     Project project;
     Task task;
     ProjectUsers projectUsers;
+    String message;
 
-    public Request(ClientsAction clientsAction,  ProjectUsers projectUsers) {
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Request(ClientsAction clientsAction, ProjectUsers projectUsers) {
         this.clientsAction = clientsAction;
         this.projectUsers = projectUsers;
     }
@@ -52,6 +61,11 @@ public class Request {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public Request(ClientsAction clientsAction, String msg) {
+        this.clientsAction = clientsAction;
+        this.message = msg;
     }
 
     public Request(ClientsAction clientsAction, Project project) {

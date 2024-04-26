@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 public class ClientHandler implements Runnable {
     private Socket clientSocket;
+    private ArrayList<ClientHandler> clients;
     private InputStream is;
     private OutputStream os;
     private DataInputStream dis;
@@ -25,6 +26,7 @@ public class ClientHandler implements Runnable {
     private Gson gson = new Gson();
     private String UserName;
     private int UserId;
+
 
     public int getUserId() {
         return UserId;
@@ -45,8 +47,9 @@ public class ClientHandler implements Runnable {
     Model model = ModelBuilder.build();
     Sender sender;
 
-    public ClientHandler(Socket clientSocket, String userName) {
+    public ClientHandler(Socket clientSocket, String userName,  ArrayList<ClientHandler> clients) {
         this.clientSocket = clientSocket;
+        this.clients = clients;
         sender = new Sender(clientSocket);
         UserName = userName;
     }
@@ -114,6 +117,24 @@ public class ClientHandler implements Runnable {
 
                     case UPDATESTATUS: {
                         model.getDb().updateStatus(msg.getTask());
+                        break;
+                    }
+
+                    case SENDMESSAGE: {
+                        Response resp = new Response();
+                        resp.setMessage(msg.getMessage());
+                        for (ClientHandler cl : clients) {
+                            cl.sender.sendResp(resp);
+                        }
+                        break;
+                    }
+                    case GETINFCLIENT:{
+                        Response resp = new Response();
+                        User user=new User();
+                        user.setUserId(UserId);
+                        user.setFirstName(UserName);
+                        resp.setUser(user);
+                        sender.sendResp(resp);
                         break;
                     }
 

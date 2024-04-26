@@ -92,8 +92,10 @@ public class DatabaseHandler extends Configs{
         ResultSet r = null;
 
         try {
-            PreparedStatement st = dbConnection.prepareStatement(" select p.* from projectusers as pu left join projects as p on pu.projectid=p.projectid where pu.userid=?");
+            PreparedStatement st = dbConnection.prepareStatement(" select p.* from projectusers as pu left join projects as p on pu.projectid=p.projectid where pu.userid=? union \n" +
+                    "select * from projects where userid=?");
             st.setInt(1,userId);
+            st.setInt(2,userId);
             r = st.executeQuery();
 
             while(r.next())

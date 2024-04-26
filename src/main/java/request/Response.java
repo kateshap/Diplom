@@ -12,8 +12,24 @@ public class Response {
 
     ArrayList<User> users=new ArrayList<User>();
     ArrayList<Task> tasks=new ArrayList<Task>();
+    String Message;
+    User user;
 
+    public User getUser() {
+        return user;
+    }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getMessage() {
+        return Message;
+    }
+
+    public void setMessage(String message) {
+        Message = message;
+    }
 
     public ArrayList<Task> getTasks() {
         return tasks;

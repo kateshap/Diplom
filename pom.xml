@@ -108,6 +108,11 @@
             <artifactId>jfoenix</artifactId>
             <version>9.0.10</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.typhon0</groupId>
+            <artifactId>AnimateFX</artifactId>
+            <version>1.2.4</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -130,7 +135,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.example.diploma/com.example.diploma.Main</mainClass>
+                            <mainClass>com.example.diploma/com.example.diploma.controllers.Main</mainClass>
                         </configuration>
                     </execution>
                 </executions>
