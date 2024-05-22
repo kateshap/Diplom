@@ -15,6 +15,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import request.ClientsAction;
 import request.Request;
@@ -23,6 +25,7 @@ import request.Sender;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class ProjectController {
@@ -41,6 +44,9 @@ public class ProjectController {
     @FXML
     private Button chatButton;
 
+    @FXML
+    private VBox projectsVbox;
+
 
 
     public Socket getSocket() {
@@ -54,6 +60,7 @@ public class ProjectController {
     Sender sender;
     ArrayList<String> projectNameByAuthor=new ArrayList<String>();
     ArrayList<String> projectNameByUser=new ArrayList<String>();
+    ArrayList<Integer> projectIdByUser=new ArrayList<Integer>();
     ArrayList<String> taskNameByUser=new ArrayList<String>();
     ArrayList<Project> projectsByAuthor;
     ArrayList<Project> projectsByUser;
@@ -91,35 +98,75 @@ public class ProjectController {
     }
 
     public void getProjects(Socket socket) throws IOException {
-        this.socket=socket;
+        this.socket = socket;
         sender = new Sender(socket);
         req = new Request(ClientsAction.GETPROJECTSBYUSER);
         sender.sendRequest(req);
         msg = sender.getResp();
 
-        projectsByUser=msg.getProjects();
+        projectsByUser = msg.getProjects();
 
         for (Project project : projectsByUser) {
             projectNameByUser.add(project.getProjectName());
+            projectIdByUser.add(project.getProjectId());
         }
 
         ObservableList<String> allProjects = FXCollections.observableArrayList(projectNameByUser);
-        listField.setItems(allProjects);//список всех проектов (как руководителя и участника)
+        //listField.setItems(allProjects);//список всех проектов (как руководителя и участника)
 
         sender = new Sender(socket);
         req = new Request(ClientsAction.GETPROJECTSBYAUTHOR);
         sender.sendRequest(req);
         msg = sender.getResp();
 
-        projectsByAuthor=msg.getProjects();
+        projectsByAuthor = msg.getProjects();
 
         for (Project project : projectsByAuthor) {
             projectNameByAuthor.add(project.getProjectName());
         }
 
+
         ObservableList<String> projectItems = FXCollections.observableArrayList(projectNameByAuthor);
         projectsFieldOnCreateProject.setItems(projectItems);// combobox со всеми проектами
         projectsFieldOnCreateProject.getSelectionModel().selectFirst();
+
+        for (int i = 0; i < allProjects.size(); i++) {
+//                Project project = (Project) allUsers.get(i);
+            Button button = new Button();
+                button.setOnMouseClicked((MouseEvent t) ->
+                {
+                    System.out.println(button.getId());
+                    FXMLLoader Loader = new FXMLLoader();
+                    Loader.setLocation(getClass().getResource("projectInfo.fxml"));
+
+                    try {
+                        Loader.load();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    ProjectInfoController projectInfoController = Loader.getController();
+                    projectInfoController.project=projectsByUser.get(Integer.parseInt(button.getId()));
+                    try {
+                        projectInfoController.initTable(socket);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    Parent p = Loader.getRoot();
+                    //Stage stage = (Stage) projectsVbox.getScene().getWindow();
+                    Stage stage = new Stage();
+                    Scene scene = new Scene(p);
+                    stage.setScene(scene);
+                    stage.show();
+
+                });
+            button.setText(allProjects.get(i));
+            button.setId(String.valueOf(i));
+
+            projectsVbox.setSpacing(10);
+
+            projectsVbox.getChildren().add(button);
+        }
     }
 
     @FXML

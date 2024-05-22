@@ -51,7 +51,7 @@ public class TaskController {
 
     @FXML
     void createTask(ActionEvent event) throws IOException {
-//        FXMLLoader loader=new FXMLLoader(getClass().getResource("CreateTask.fxml"));
+//        FXMLLoader loader=new FXMLLoader(getClass().getResource("CreateTaskOldVersion.fxml"));
 //        Parent root=loader.load();
 //
 //        TaskController taskController=loader.getController();
@@ -60,11 +60,11 @@ public class TaskController {
 //        contentPane.getChildren().removeAll();
 //        contentPane.getChildren().setAll(root);
 
-        FXMLLoader fxmlLoader=new FXMLLoader(getClass().getResource("CreateTask.fxml"));
+        FXMLLoader fxmlLoader=new FXMLLoader(getClass().getResource("CreateTaskOldVersion.fxml"));
         Parent root1=(Parent) fxmlLoader.load();
 
         CreateTaskController сreateTaskController=fxmlLoader.getController();
-        сreateTaskController.getInfoForTasks(socket);
+        //сreateTaskController.getInfoForTasks(socket);
 
         Stage stage=new Stage();
         stage.setScene(new Scene(root1));

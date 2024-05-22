@@ -1,15 +1,88 @@
 package com.example.diploma;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Task {
     private int taskId;
     private String taskName;
+    private LocalDate beginDate;
     private LocalDate executeDate;
+    private int duration;
     private int projectId;
     private int userId;
+
+    public LocalDate getBeginDate() {
+        return beginDate;
+    }
+
+    public void setBeginDate(LocalDate beginDate) {
+        this.beginDate = beginDate;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public int getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
+    }
+
+    public int getChildId() {
+        return childId;
+    }
+
+    public void setChildId(int childId) {
+        this.childId = childId;
+    }
+
+    public int getPercent() {
+        return percent;
+    }
+
+    public void setPercent(int percent) {
+        this.percent = percent;
+    }
+
     private String status;
+    private int parentId;
+    private int childId;
+    private int percent;
+
+    public Task( String taskName, LocalDate beginDate, LocalDate executeDate, int duration, int projectId, int userId, String status, int parentId) {
+        this.taskName = taskName;
+        this.beginDate = beginDate;
+        this.executeDate = executeDate;
+        this.duration = duration;
+        this.projectId = projectId;
+        this.userId = userId;
+        this.status = status;
+        this.parentId = parentId;
+    }
+
+    public Task(int taskId, String taskName, LocalDate beginDate, LocalDate executeDate, int duration, int projectId, int userId, String status, int parentId, int childId, int percent) {
+        this.taskId = taskId;
+        this.taskName = taskName;
+        this.beginDate = beginDate;
+        this.executeDate = executeDate;
+        this.duration = duration;
+        this.projectId = projectId;
+        this.userId = userId;
+        this.status = status;
+        this.parentId = parentId;
+        this.childId = childId;
+        this.percent = percent;
+    }
+
+
+
 
     public Task(){ }
 

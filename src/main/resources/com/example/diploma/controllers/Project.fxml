@@ -4,6 +4,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="313.0" prefWidth="491.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.diploma.controllers.ProjectController">
     <children>
@@ -13,5 +14,6 @@
       <ComboBox fx:id="projectsFieldOnCreateProject" layoutX="323.0" layoutY="78.0" prefWidth="150.0" promptText="projects field" />
       <Button fx:id="AddUserButton" layoutX="317.0" layoutY="173.0" mnemonicParsing="false" onAction="#addProjectUsers" prefHeight="43.0" prefWidth="162.0" text="Добавить участника" />
       <Button fx:id="chatButton" layoutX="366.0" layoutY="255.0" mnemonicParsing="false" onAction="#openChat" text="Чат" />
+      <VBox fx:id="projectsVbox" layoutX="46.0" layoutY="17.0" prefHeight="291.0" prefWidth="200.0" />
     </children>
 </AnchorPane>

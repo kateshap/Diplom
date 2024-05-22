@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="512.0" prefWidth="758.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.diploma.controllers.ProjectInfoController">
+   <children>
+      <TableView fx:id="tableview" layoutY="86.0" prefHeight="356.0" prefWidth="763.0">
+         <columns>
+            <TableColumn fx:id="TaskName" onEditCommit="#EditName" prefWidth="104.0" text="Название" />
+            <TableColumn fx:id="TaskBeginDate" minWidth="0.0" prefWidth="74.0" text="Дата начала" />
+            <TableColumn fx:id="TaskExecuteDate" prefWidth="66.0" text="Дата конца" />
+            <TableColumn fx:id="TaskDuration" onEditCommit="#EditDuration" prefWidth="124.0" text="Продолжительность" />
+            <TableColumn fx:id="TaskStatus" minWidth="6.0" onEditCommit="#EditStatus" prefWidth="55.0" text="Статус" />
+            <TableColumn fx:id="TaskPercent" minWidth="6.0" onEditCommit="#EditPercent" prefWidth="113.0" text="Процент выполнения" />
+            <TableColumn fx:id="TaskDependency" minWidth="0.0" onEditCommit="#EditDependency" prefWidth="99.0" text="Зависимость" />
+            <TableColumn fx:id="TaskUser" onEditCommit="#EditUser" prefWidth="124.0" text="Исполнитель" />
+         </columns>
+      </TableView>
+      <Button fx:id="GanttChartButton" layoutX="534.0" layoutY="458.0" mnemonicParsing="false" onAction="#showGanttChart" text="Диаграмма Ганта" />
+      <Button fx:id="AddTaskBtn" layoutX="51.0" layoutY="23.0" mnemonicParsing="false" onAction="#AddTask" text="Создать задачу" />
+      <Button fx:id="DeleteTaskBtn" layoutX="224.0" layoutY="23.0" mnemonicParsing="false" onAction="#DeleteTask" text="Удалить задачу" />
+   </children>
+</AnchorPane>

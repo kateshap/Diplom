@@ -9,7 +9,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import request.ClientsAction;
 import request.Request;
@@ -19,6 +18,7 @@ import request.Sender;
 import java.io.IOException;
 import java.net.Socket;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class CreateTaskController {
@@ -26,46 +26,48 @@ public class CreateTaskController {
     private TextField nameField;
 
     @FXML
-    private ComboBox<String> projectsField;
-
-    @FXML
     private ComboBox<String> usersField;
 
     @FXML
-    private DatePicker dateField;
+    private Button createTaskButton;
 
     @FXML
-    private Button createTaskButton;
+    private TextField durationField;
+
+    @FXML
+    private ComboBox<String> dependencyField;
 
     public Socket socket;
     Sender sender;
     ArrayList<String> projectNameByAuthor=new ArrayList<String>();
     ArrayList<String> projectNameByUser=new ArrayList<String>();
-    ArrayList<String> taskNameByUser=new ArrayList<String>();
+    ArrayList<String> taskNameByProject=new ArrayList<String>();
     ArrayList<Project> projectsByAuthor;
     ArrayList<Project> projectsByUser;
-    ArrayList<Task> tasksByUser;
+    ArrayList<Task> tasksByProject;
     ArrayList<String> userFullName=new ArrayList<String>();
     ArrayList<String> userFullNameOnCreateProject=new ArrayList<String>();
     ArrayList<User> users;
     ArrayList<User> usersOnCreateProject;
     Request req;
     Response msg;
+    Project project;
 
     @FXML
-    void create_task(ActionEvent event) {
+    void create_task(ActionEvent event) throws IOException {
         String taskName = nameField.getText();
-        LocalDate date = dateField.getValue();
-        String projectNameItem = projectsField.getSelectionModel().getSelectedItem().toString();
+        //LocalDate date = dateField.getValue();
+        String taskNameItem = dependencyField.getSelectionModel().getSelectedItem().toString();
         String userNameItem = usersField.getSelectionModel().getSelectedItem().toString();
+        String taskDuration=durationField.getText();
 
-        int projectId=0;
-
-        for (Project project : projectsByAuthor) {
-            if(project.getProjectName().equals(projectNameItem)){
-                projectId=project.getProjectId();
-            }
-        }
+//        int projectId=0;
+//
+//        for (Project project : projectsByAuthor) {
+//            if(project.getProjectName().equals(taskNameItem)){
+//                projectId=project.getProjectId();
+//            }
+//        }
 
         int userId=0;
 
@@ -75,7 +77,20 @@ public class CreateTaskController {
             }
         }
 
-        Task task=new Task(taskName,date, projectId,userId,"назначена" );
+        int parentId=0;
+        LocalDate beginDate = null;
+        LocalDate executeDate = null;
+
+        for (Task task : tasksByProject) {
+            if(task.getTaskName().equals(taskNameItem)){
+                parentId=task.getTaskId();
+                beginDate=task.getExecuteDate();
+                executeDate= beginDate.plusDays(Integer.parseInt(taskDuration));
+
+            }
+        }
+
+        Task task=new Task(taskName,beginDate,executeDate, Integer.parseInt(taskDuration), project.getProjectId(),userId,"назначена", parentId);
 
 
         Sender sender = new Sender(socket);
@@ -83,22 +98,24 @@ public class CreateTaskController {
         sender.sendRequest(req);
     }
 
-    public void getInfoForTasks(Socket socket) throws IOException {
+    public void getInfoForTasks(Socket socket,Project project) throws IOException {
         this.socket=socket;
+        this.project=project;
 
         sender = new Sender(socket);
-        req = new Request(ClientsAction.GETPROJECTSBYAUTHOR);
+        req = new Request(ClientsAction.GETTASKSBYPROJECT);
+        req.setProject(project);
         sender.sendRequest(req);
         msg = sender.getResp();
 
-        projectsByAuthor=msg.getProjects();
+        tasksByProject=msg.getTasks();
 
-        for (Project project : projectsByAuthor) {
-            projectNameByAuthor.add(project.getProjectName());
+        for (Task task : tasksByProject) {
+            taskNameByProject.add(task.getTaskName());
         }
 
-        ObservableList<String> projectItems = FXCollections.observableArrayList(projectNameByAuthor);
-        projectsField.setItems(projectItems);//для задач
+        ObservableList<String> allTasks = FXCollections.observableArrayList(taskNameByProject);
+        dependencyField.setItems(allTasks);
 
 
         req = new Request(ClientsAction.GETUSERS);

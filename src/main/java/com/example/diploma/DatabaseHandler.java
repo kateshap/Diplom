@@ -122,8 +122,28 @@ public class DatabaseHandler extends Configs{
 
             while(r.next())
             {
-                var task = new Task(r.getInt("taskid"),r.getString("name"),new java.sql.Date(r.getDate("executedate").getTime()).toLocalDate(),
-                        r.getInt("projectid"),r.getInt("userid"),r.getString("status"));
+                var task = new Task(r.getInt("taskid"),r.getString("name"),new java.sql.Date(r.getDate("begindate").getTime()).toLocalDate(),new java.sql.Date(r.getDate("executedate").getTime()).toLocalDate(),
+                        r.getInt("duration"),r.getInt("projectid"),r.getInt("userid"),r.getString("status"),r.getInt("parentid"),r.getInt("childid"),r.getInt("percent"));
+                res.add(task);
+            }
+        } catch (SQLException ex) { }
+
+        return res;
+    }
+
+    public ArrayList<Task> getTasksByProject(int projectId) {//получить все проекты участника для вкладки
+        ArrayList<Task> res = new ArrayList<>();
+        ResultSet r = null;
+
+        try {
+            PreparedStatement st = dbConnection.prepareStatement(" select * from tasks where projectid=?");
+            st.setInt(1,projectId);
+            r = st.executeQuery();
+
+            while(r.next())
+            {
+                var task = new Task(r.getInt("taskid"),r.getString("name"),new java.sql.Date(r.getDate("begindate").getTime()).toLocalDate(),new java.sql.Date(r.getDate("executedate").getTime()).toLocalDate(),
+                        r.getInt("duration"),r.getInt("projectid"),r.getInt("userid"),r.getString("status"),r.getInt("parentid"),r.getInt("childid"),r.getInt("percent"));
                 res.add(task);
             }
         } catch (SQLException ex) { }
@@ -205,19 +225,59 @@ public class DatabaseHandler extends Configs{
     }
 
     public void createTask(Task task) throws SQLException, ClassNotFoundException {
-        String insert = "INSERT INTO "+ Const.TASK_TABLE+"("+Const.TASK_NAME+","+Const.TASK_EXECUTE_DATE+","+Const.TASK_PROJECT_ID+","
-                +Const.TASK_USER_ID+","+Const.TASK_STATUS + ")"+ "VALUES(?,?,?,?,?)";
+        String insert = "INSERT INTO tasks (name,beginDate,executeDate,duration,projectid,userid,status,parentid) VALUES(?,?,?,?,?,?,?,?)";
 
         PreparedStatement prSt = dbConnection.prepareStatement(insert);
         prSt.setString(1,task.getTaskName());
-        prSt.setDate(2, Date.valueOf(task.getExecuteDate()));
-        prSt.setInt(3,task.getProjectId());
-        prSt.setInt(4, task.getUserId());
-        prSt.setString(5,task.getStatus());
+        prSt.setDate(2, Date.valueOf(task.getBeginDate()));
+        prSt.setDate(3, Date.valueOf(task.getExecuteDate()));
+        prSt.setInt(4,task.getDuration());
+        prSt.setInt(5,task.getProjectId());
+        prSt.setInt(6, task.getUserId());
+        prSt.setString(7,task.getStatus());
+        prSt.setInt(8, task.getParentId());
         prSt.executeUpdate();
     }
 
-    public void updateStatus(Task task) throws SQLException, ClassNotFoundException {
+    public void updateTaskName(Task task) throws SQLException, ClassNotFoundException {
+        String update = "update tasks set name =? where taskid =?";
+
+        PreparedStatement prSt = dbConnection.prepareStatement(update);
+        prSt.setString(1,task.getTaskName());
+        prSt.setInt(2, task.getTaskId());
+        prSt.executeUpdate();
+    }
+
+    public void updateTaskBeginDate(Task task) throws SQLException, ClassNotFoundException {
+        String update = "update tasks set begindate =? where taskid =?";
+
+        PreparedStatement prSt = dbConnection.prepareStatement(update);
+        prSt.setDate(1, Date.valueOf(task.getBeginDate()));
+        prSt.setInt(2, task.getTaskId());
+        prSt.executeUpdate();
+    }
+
+    public void updateTaskExecuteDate(Task task) throws SQLException, ClassNotFoundException {
+        String update = "update tasks set executedate =? where taskid =?";
+
+        PreparedStatement prSt = dbConnection.prepareStatement(update);
+        prSt.setDate(1, Date.valueOf(task.getExecuteDate()));
+        prSt.setInt(2, task.getTaskId());
+        prSt.executeUpdate();
+    }
+
+
+    public void updateTaskDuration(Task task) throws SQLException, ClassNotFoundException {
+        String update = "update tasks set duration =? where taskid =?";
+
+        PreparedStatement prSt = dbConnection.prepareStatement(update);
+        prSt.setInt(1, task.getDuration());
+        prSt.setInt(2, task.getTaskId());
+        prSt.executeUpdate();
+    }
+
+
+    public void updateTaskStatus(Task task) throws SQLException, ClassNotFoundException {
         String update = "update tasks set status =? where taskid =?";
 
         PreparedStatement prSt = dbConnection.prepareStatement(update);
@@ -226,4 +286,60 @@ public class DatabaseHandler extends Configs{
         prSt.executeUpdate();
     }
 
+
+    public void updateTaskPercent(Task task) throws SQLException, ClassNotFoundException {
+        String update = "update tasks set percent =? where taskid =?";
+
+        PreparedStatement prSt = dbConnection.prepareStatement(update);
+        prSt.setInt(1,task.getPercent());
+        prSt.setInt(2, task.getTaskId());
+        prSt.executeUpdate();
+    }
+
+    public void updateTaskParentId(Task task) throws SQLException, ClassNotFoundException {
+        String update = "update tasks set parentid =? where taskid =?";
+
+        PreparedStatement prSt = dbConnection.prepareStatement(update);
+        prSt.setInt(1,task.getParentId());
+        prSt.setInt(2, task.getTaskId());
+        prSt.executeUpdate();
+    }
+
+    public void updateTaskUser(Task task) throws SQLException, ClassNotFoundException {
+        String update = "update tasks set userid =? where taskid =?";
+
+        PreparedStatement prSt = dbConnection.prepareStatement(update);
+        prSt.setInt(1,task.getUserId());
+        prSt.setInt(2, task.getTaskId());
+        prSt.executeUpdate();
+    }
+
+    public ArrayList<Task> getTasksByParentId(int parentId) {
+        ArrayList<Task> res = new ArrayList<>();
+        ResultSet r = null;
+
+        try {
+            PreparedStatement st = dbConnection.prepareStatement(" select * from tasks where parentid=?");
+            st.setInt(1,parentId);
+            r = st.executeQuery();
+
+            while(r.next())
+            {
+                var task = new Task(r.getInt("taskid"),r.getString("name"),new java.sql.Date(r.getDate("begindate").getTime()).toLocalDate(),new java.sql.Date(r.getDate("executedate").getTime()).toLocalDate(),
+                        r.getInt("duration"),r.getInt("projectid"),r.getInt("userid"),r.getString("status"),r.getInt("parentid"),r.getInt("childid"),r.getInt("percent"));
+                res.add(task);
+            }
+        } catch (SQLException ex) { }
+
+        return res;
+
+    }
+
+    public void deleteTask(Task task) throws SQLException, ClassNotFoundException  {
+        String delete = "delete from tasks where taskid =?";
+
+        PreparedStatement prSt = dbConnection.prepareStatement(delete);
+        prSt.setInt(1, task.getTaskId());
+        prSt.executeUpdate();
+    }
 }

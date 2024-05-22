@@ -115,8 +115,58 @@ public class ClientHandler implements Runnable {
                         break;
                     }
 
-                    case UPDATESTATUS: {
-                        model.getDb().updateStatus(msg.getTask());
+                    case DELETETASK:{
+                        ArrayList<Task> tasks;
+                        Response resp = new Response();
+                        tasks=model.getDb().getTasksByParentId(msg.getTask().getTaskId());
+                        if(tasks.isEmpty()){
+                            model.getDb().deleteTask(msg.getTask());
+                            resp.setServReaction(ServReaction.SUCCESS);
+                        }
+                        else{
+                            resp.setServReaction(ServReaction.FAIL);
+                        }
+                        sender.sendResp(resp);
+                        break;
+                    }
+
+                    case UPDATETASKNAME: {
+                        model.getDb().updateTaskName(msg.getTask());
+                        break;
+                    }
+                    case UPDATETASKDURATION: {
+                        model.getDb().updateTaskDuration(msg.getTask());
+                        model.getDb().updateTaskExecuteDate(msg.getTask());
+                        ArrayList<Task> tasks;
+                        tasks=model.getDb().getTasksByParentId(msg.getTask().getTaskId());
+                        Response resp = new Response();
+                        resp.setTasks(tasks);
+                        sender.sendResp(resp);
+                        break;
+                    }
+
+                    case UPDATETASKSTATUS: {
+                        model.getDb().updateTaskStatus(msg.getTask());
+                        break;
+                    }
+                    case UPDATETASKPERCENT: {
+                        model.getDb().updateTaskPercent(msg.getTask());
+                        break;
+                    }
+                    case UPDATETASKPARENTID: {
+                        model.getDb().updateTaskParentId(msg.getTask());
+                        model.getDb().updateTaskBeginDate(msg.getTask());
+                        model.getDb().updateTaskExecuteDate(msg.getTask());
+                        ArrayList<Task> tasks;
+                        tasks=model.getDb().getTasksByParentId(msg.getTask().getTaskId());
+                        Response resp = new Response();
+                        resp.setTasks(tasks);
+                        sender.sendResp(resp);
+                        break;
+                    }
+
+                    case UPDATETASKUSER: {
+                        model.getDb().updateTaskUser(msg.getTask());
                         break;
                     }
 
@@ -137,6 +187,15 @@ public class ClientHandler implements Runnable {
                         sender.sendResp(resp);
                         break;
                     }
+                    case GETTASKSBYPROJECT:{
+                        ArrayList<Task> tasks;
+                        tasks=model.getDb().getTasksByProject(msg.getProject().getProjectId());
+                        Response resp = new Response();
+                        resp.setTasks(tasks);
+                        sender.sendResp(resp);
+                        break;
+                    }
+
 
                 }
 

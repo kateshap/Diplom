@@ -5,6 +5,7 @@ import animatefx.animation.FadeIn;
 import com.example.diploma.User;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
@@ -23,6 +24,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import request.ClientsAction;
 import request.Request;
 import request.Response;
@@ -30,6 +32,7 @@ import request.Sender;
 //import org.apache.commons.lang3.StringUtils;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
@@ -109,6 +112,7 @@ public class ChatController extends Thread implements Initializable {
     public void run() {
         try {
             while (true) {
+                final boolean[] f = {false};
                 msg = sender.getResp();
 
                 String[] tokens =  msg.getMessage().split(" ");
@@ -122,10 +126,11 @@ public class ChatController extends Thread implements Initializable {
 
                 if (cmd.equalsIgnoreCase(user.getFirstName() + ":")) {
                     continue;
-                } else if(fulmsg.toString().equalsIgnoreCase("bye")) {
+                } else if(fulmsg.toString().equalsIgnoreCase("bye") || f[0]==true) {
                     break;
                 }
                 msgRoom.appendText(msg.getMessage() + "\n");
+
             }
 
             //socket.close();
@@ -133,6 +138,8 @@ public class ChatController extends Thread implements Initializable {
             e.printStackTrace();
         }
     }
+
+
 
 
     public void handleProfileBtn(ActionEvent event) {
@@ -174,6 +181,8 @@ public class ChatController extends Thread implements Initializable {
     }
 
 
+
+
     public void send() {
         String msg = msgField.getText();
 
@@ -184,9 +193,14 @@ public class ChatController extends Thread implements Initializable {
         msgRoom.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
         msgRoom.appendText("Me: " + msg + "\n");
         msgField.setText("");
-        if(msg.equalsIgnoreCase("BYE") || (msg.equalsIgnoreCase("logout"))) {
-            System.exit(0);
-        }
+//        if(msg.equalsIgnoreCase("BYE") || (msg.equalsIgnoreCase("logout"))) {
+//            System.exit(0);
+//        }
+        msgRoom.getScene().getWindow().setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent we) {
+
+            }
+        });
     }
 
     // Changing profile pic
