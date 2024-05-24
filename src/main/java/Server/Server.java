@@ -2,6 +2,7 @@ package Server;
 
 import com.example.diploma.DatabaseHandler;
 import com.example.diploma.Task;
+import com.example.diploma.User;
 import model.Model;
 import model.ModelBuilder;
 import request.Request;
@@ -68,6 +69,7 @@ public class Server {
 
         Response resp = new Response(ServReaction.SUCCESS);
         String userRole;
+        //User user;
 
         //проверка регистрация или вход и разные проверки из этого
         switch (msg.getClientsAction()) {

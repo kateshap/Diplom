@@ -61,6 +61,13 @@ public class ProjectInfoController {
     @FXML
     private TableColumn<Task, Integer> TaskUser;
 
+    @FXML
+    private Button AddTaskBtn;
+
+    @FXML
+    private Button DeleteTaskBtn;
+
+
 
     @FXML
     private Button GanttChartButton;
@@ -71,6 +78,7 @@ public class ProjectInfoController {
     Response msg;
     Project project;
     ObservableList<Task> tasksByProject;
+    private String userRole;
 
     public Sender getSender() {
         return sender;
@@ -188,8 +196,9 @@ public class ProjectInfoController {
 
     }
 
-    void initTable(Socket socket) throws IOException {
+    void initTable(Socket socket, String userRole) throws IOException {
         this.socket = socket;
+        this.userRole=userRole;
 
         TaskName.setCellValueFactory(new PropertyValueFactory<Task, String>("taskName"));
         TaskBeginDate.setCellValueFactory(new PropertyValueFactory<Task, LocalDate>("beginDate"));
@@ -200,14 +209,28 @@ public class ProjectInfoController {
         TaskDependency.setCellValueFactory(new PropertyValueFactory<Task, Integer>("parentId"));
         TaskUser.setCellValueFactory(new PropertyValueFactory<Task, Integer>("userId"));
 
-        tableview.setEditable(true);
+        if(userRole.equals("manager")){
+            tableview.setEditable(true);
+            TaskName.setCellFactory(TextFieldTableCell.forTableColumn());
+            TaskDuration.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+            TaskStatus.setCellFactory(TextFieldTableCell.forTableColumn());
+            TaskPercent.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+            TaskDependency.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+            TaskUser.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        }
+        else if(userRole.equals("director")){
+            AddTaskBtn.setVisible(false);
+            DeleteTaskBtn.setVisible(false);
 
-        TaskName.setCellFactory(TextFieldTableCell.forTableColumn());
-        TaskDuration.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-        TaskStatus.setCellFactory(TextFieldTableCell.forTableColumn());
-        TaskPercent.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-        TaskDependency.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-        TaskUser.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        }
+        else if(userRole.equals("user")){
+            AddTaskBtn.setVisible(false);
+            DeleteTaskBtn.setVisible(false);
+
+            tableview.setEditable(true);
+            TaskStatus.setCellFactory(TextFieldTableCell.forTableColumn());
+            TaskPercent.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        }
 
         loadDataForTable();
     }
@@ -228,44 +251,63 @@ public class ProjectInfoController {
 
     @FXML
     private void AddTask(ActionEvent event) throws IOException {
+        if(userRole.equals("manager")){
+            FXMLLoader fxmlLoader=new FXMLLoader(getClass().getResource("CreateTask.fxml"));
+            Parent root1=(Parent) fxmlLoader.load();
 
-        FXMLLoader fxmlLoader=new FXMLLoader(getClass().getResource("CreateTask.fxml"));
-        Parent root1=(Parent) fxmlLoader.load();
+            CreateTaskController сreateTaskController=fxmlLoader.getController();
+            сreateTaskController.getInfoForTasks(socket,project);
 
-        CreateTaskController сreateTaskController=fxmlLoader.getController();
-        сreateTaskController.getInfoForTasks(socket,project);
-
-        Stage stage=new Stage();
-        stage.setScene(new Scene(root1));
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            public void handle(WindowEvent we) {
-                System.out.println("Stage is closing");
-                try {
-                    loadDataForTable();
-                } catch (IOException e) {
-                    e.printStackTrace();
+            Stage stage=new Stage();
+            stage.setScene(new Scene(root1));
+            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                public void handle(WindowEvent we) {
+                    System.out.println("Stage is closing");
+                    try {
+                        loadDataForTable();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
-        stage.show();
+            });
+            stage.show();
+
+        }
+        else if(userRole.equals("director")){
+
+        }
+        else if(userRole.equals("user")){
+
+        }
+
+
     }
 
     @FXML
     void DeleteTask(ActionEvent event) throws IOException {
-        Task task = tableview.getSelectionModel().getSelectedItem();
+        if(userRole.equals("manager")){
+            Task task = tableview.getSelectionModel().getSelectedItem();
 
-        Sender sender = new Sender(socket);
-        Request req = new Request(ClientsAction.DELETETASK, task);
-        sender.sendRequest(req);
+            Sender sender = new Sender(socket);
+            Request req = new Request(ClientsAction.DELETETASK, task);
+            sender.sendRequest(req);
 
-        msg = sender.getResp();
+            msg = sender.getResp();
 
-        if(msg.getServReaction()== ServReaction.SUCCESS){
-            tableview.getItems().remove(task);
+            if(msg.getServReaction()== ServReaction.SUCCESS){
+                tableview.getItems().remove(task);
+            }
+            else{
+                System.out.println("Task has dependency");
+            }
         }
-        else{
-            System.out.println("Task has dependency");
+        else if(userRole.equals("director")){
+
         }
+        else if(userRole.equals("user")){
+
+        }
+
     }
 
 

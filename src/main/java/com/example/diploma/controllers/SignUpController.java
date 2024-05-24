@@ -99,7 +99,7 @@ public class SignUpController {
             gender = "Мужской";
         else
             gender = "Женский";
-        User user = new User(firstName, lastName, login, password, gender, email,lastName+" "+firstName);
+        User user = new User(firstName, lastName, login, password, gender, email,lastName+" "+firstName,"manager");
 
         Sender sender = new Sender(socket);
         Request req = new Request(ClientsAction.SIGNUP, user);

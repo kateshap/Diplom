@@ -56,7 +56,7 @@ public class DatabaseHandler extends Configs{
     }
 
     public String getUserRole(User user){
-        String res = new String();
+        String res = "";
         ResultSet r = null;
 
         try {
@@ -64,12 +64,29 @@ public class DatabaseHandler extends Configs{
             prSt.setString(1,user.getLogin());
             prSt.setString(2,user.getPassword());
             r = prSt.executeQuery();
+            r.next();
 
             res=r.getString("role");
 
         } catch (SQLException ex) { }
 
         return res;
+
+//        ResultSet r = null;
+//        User user = new User();
+//
+//        try {
+//            PreparedStatement prSt = dbConnection.prepareStatement("select * from users where login=? and password=?");
+//            prSt.setString(1,oldUser.getLogin());
+//            prSt.setString(2,oldUser.getPassword());
+//            r = prSt.executeQuery();
+//
+//            user.setRole(r.getString("role"));
+//            user.setUserId(r.getInt("userid"));
+//
+//        } catch (SQLException ex) { }
+//
+//        return user;
     }
 
 
@@ -215,7 +232,7 @@ public class DatabaseHandler extends Configs{
             while(r.next())
             {
                 var user = new User(r.getString("firstname"),r.getString("lastname"),r.getString("login"),
-                        r.getString("password"), r.getString("email"), r.getString("gender"),r.getString("fullname"));
+                        r.getString("password"), r.getString("email"), r.getString("gender"),r.getString("fullname"),r.getString("role"));
                 user.setUserId(r.getInt("userid"));
                 res.add(user);
             }

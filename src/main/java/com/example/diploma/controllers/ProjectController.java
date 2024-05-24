@@ -134,7 +134,6 @@ public class ProjectController {
         projectsFieldOnCreateProject.getSelectionModel().selectFirst();
 
         for (int i = 0; i < allProjects.size(); i++) {
-//                Project project = (Project) allUsers.get(i);
             Button button = new Button();
                 button.setOnMouseClicked((MouseEvent t) ->
                 {
@@ -150,7 +149,7 @@ public class ProjectController {
                     ProjectInfoController projectInfoController = Loader.getController();
                     projectInfoController.project=projectsByUser.get(Integer.parseInt(button.getId()));
                     try {
-                        projectInfoController.initTable(socket);
+                        projectInfoController.initTable(socket,userRole);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -237,12 +236,9 @@ public class ProjectController {
         ChatController chatController=loader.getController();
         chatController.getInfClient(socket);
 
-        //FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("SignIn.fxml"));
         Stage stage=new Stage();
         stage.setScene(new Scene(root));
         stage.show();
-
-
     }
 
 }

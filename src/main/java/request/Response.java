@@ -48,7 +48,7 @@ public class Response {
         this.tasks = tasks;
     }
 
-    public Response() {}
+    public Response(ServReaction success, User user) {}
 
     public ArrayList<User> getUsers() {
         return users;
