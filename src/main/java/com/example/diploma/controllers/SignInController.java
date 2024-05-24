@@ -48,6 +48,7 @@ public class SignInController {
     InetAddress ip = null;
     private Socket socket;
     Sender sender;
+    String userRole;
 
 
     @FXML
@@ -94,6 +95,7 @@ public class SignInController {
 
 
         Response msg = sender.getResp();
+        userRole=msg.getUserRole();
 
         if (msg.getServReaction() == ServReaction.SUCCESS) {
             openNewScene("Menu.fxml");
@@ -102,17 +104,13 @@ public class SignInController {
     }
 
     public void openNewScene(String window) throws IOException {
-//        AnchorPane scene1= FXMLLoader.load(getClass().getResource(window));
-//        SignInScene.getChildren().removeAll();
-//        SignInScene.getChildren().setAll(scene1);
-
         FXMLLoader loader=new FXMLLoader(getClass().getResource(window));
         Parent root=loader.load();
 
         MenuController menuController=loader.getController();
         menuController.socket=socket;
+        menuController.userRole=userRole;
 
-        //FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("SignIn.fxml"));
 
         Stage stage=(Stage) SignInScene.getScene().getWindow();
         Scene scene = new Scene(root);

@@ -41,6 +41,7 @@ public class MenuController {
     private ImageView menu;
 
     public Socket socket;
+    public String userRole;
     Sender sender;
     ArrayList<String> projectNameByAuthor=new ArrayList<String>();
     ArrayList<String> projectNameByUser=new ArrayList<String>();
@@ -104,6 +105,7 @@ public class MenuController {
 
         ProfileController profileController = loader.getController();
         profileController.socket = socket;
+        profileController.userRole = userRole;
 
         contentPane.getChildren().removeAll();
         contentPane.getChildren().setAll(root);
@@ -115,15 +117,10 @@ public class MenuController {
         Parent root=loader.load();
 
         ProjectController projectController=loader.getController();
-        projectController.getProjects(socket);
+        projectController.getProjects(socket,userRole);
 
         contentPane.getChildren().removeAll();
         contentPane.getChildren().setAll(root);
-//
-//        Stage stage=(Stage)((Node)event.getSource()).getScene().getWindow();
-//        Scene scene = new Scene(root);
-//        stage.setScene(scene);
-//        stage.show();
     }
 
     @FXML
@@ -133,6 +130,7 @@ public class MenuController {
 
         SettingsController settingsController=loader.getController();
         settingsController.socket=socket;
+        settingsController.userRole=userRole;
 
         contentPane.getChildren().removeAll();
         contentPane.getChildren().setAll(root);
@@ -144,7 +142,7 @@ public class MenuController {
         Parent root=loader.load();
 
         TaskController taskController=loader.getController();
-        taskController.getTasks(socket);
+        taskController.getTasks(socket,userRole);
 
         contentPane.getChildren().removeAll();
         contentPane.getChildren().setAll(root);

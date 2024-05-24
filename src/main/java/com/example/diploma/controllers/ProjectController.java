@@ -57,6 +57,7 @@ public class ProjectController {
     }
 
     Socket socket;
+    String userRole;
     Sender sender;
     ArrayList<String> projectNameByAuthor=new ArrayList<String>();
     ArrayList<String> projectNameByUser=new ArrayList<String>();
@@ -97,8 +98,10 @@ public class ProjectController {
 
     }
 
-    public void getProjects(Socket socket) throws IOException {
+    public void getProjects(Socket socket,String userRole) throws IOException {
         this.socket = socket;
+        this.userRole=userRole;
+
         sender = new Sender(socket);
         req = new Request(ClientsAction.GETPROJECTSBYUSER);
         sender.sendRequest(req);

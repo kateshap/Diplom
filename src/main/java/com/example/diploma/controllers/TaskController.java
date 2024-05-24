@@ -35,6 +35,7 @@ public class TaskController {
 
 
     public Socket socket;
+    String userRole;
     Sender sender;
     ArrayList<String> projectNameByAuthor=new ArrayList<String>();
     ArrayList<String> projectNameByUser=new ArrayList<String>();
@@ -76,8 +77,10 @@ public class TaskController {
 
     }
 
-    public void getTasks(Socket socket) throws IOException {
+    public void getTasks(Socket socket, String userRole) throws IOException {
         this.socket=socket;
+        this.userRole=userRole;
+
         sender = new Sender(socket);
         req = new Request(ClientsAction.GETTASKSBYUSER);
         sender.sendRequest(req);

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class SettingsController {
     public Socket socket;
+    public String userRole;
     Sender sender;
     ArrayList<String> projectNameByAuthor=new ArrayList<String>();
     ArrayList<String> projectNameByUser=new ArrayList<String>();

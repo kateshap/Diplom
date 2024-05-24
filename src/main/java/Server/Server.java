@@ -1,6 +1,7 @@
 package Server;
 
 import com.example.diploma.DatabaseHandler;
+import com.example.diploma.Task;
 import model.Model;
 import model.ModelBuilder;
 import request.Request;
@@ -66,15 +67,19 @@ public class Server {
         ResultSet result=null;
 
         Response resp = new Response(ServReaction.SUCCESS);
+        String userRole;
 
         //проверка регистрация или вход и разные проверки из этого
         switch (msg.getClientsAction()) {
             case SIGNUP: {
                 model.getDb().signUpUser(msg.getUser());
+                userRole=model.getDb().getUserRole(msg.getUser());
+                resp = new Response(ServReaction.SUCCESS,userRole);
                 break;
             }
             case SIGNIN: {
                 result = model.getDb().getUser(msg.getUser());
+                userRole=model.getDb().getUserRole(msg.getUser());
                 int counter = 0;
 
                 while (result.next()) {
@@ -82,6 +87,9 @@ public class Server {
                 }
                 if (counter < 1) {
                     resp = new Response(ServReaction.FAIL);
+                }
+                else{
+                    resp = new Response(ServReaction.SUCCESS,userRole);
                 }
                 break;
             }

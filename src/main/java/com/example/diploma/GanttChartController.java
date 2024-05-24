@@ -3,17 +3,30 @@ package com.example.diploma;
 import javafx.beans.NamedArg;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 public class GanttChartController<X,Y> extends XYChart<X,Y> {
+
+    ArrayList<StackPane> regions=new ArrayList<>(5);
+    ArrayList<Pane> panes=new ArrayList<>();
+    ArrayList<Double> widths=new ArrayList<>(5);
+    ArrayList<Double> xArray=new ArrayList<>(5);
+    ArrayList<Double> yArray=new ArrayList<>(5);
+    ArrayList<ArrayList<Integer>> childrenId=new ArrayList<>(5);
+    double height=0;
+    boolean f=false;
 
     public static class ExtraData {
 
@@ -21,14 +34,16 @@ public class GanttChartController<X,Y> extends XYChart<X,Y> {
         //LocalDate lb = LocalDate.parse("2018-10-19");
         //public String outputDate = lb.toString();
         public String styleClass;
+        public ArrayList<Integer> childrenArrayId;
 
 
-        public ExtraData(double lengthMS, String styleClass) {
+        public ExtraData(double lengthMS, String styleClass,ArrayList<Integer> childrenArrayId) {
             super();
             this.length = lengthMS;
             this.styleClass = styleClass;
+            this.childrenArrayId=new ArrayList<>(childrenArrayId);
         }
-        public double getlength() {
+        public double getLength() {
             return length;
         }
         public void setLength(long length) {
@@ -39,6 +54,12 @@ public class GanttChartController<X,Y> extends XYChart<X,Y> {
         }
         public void setStyleClass(String styleClass) {
             this.styleClass = styleClass;
+        }
+        public ArrayList<Integer> getChildrenArrayId() {
+            return childrenArrayId;
+        }
+        public void setChildrenArrayId(ArrayList<Integer> childrenArrayId) {
+            this.childrenArrayId = new ArrayList<>(childrenArrayId);
         }
     }
 
@@ -56,12 +77,15 @@ public class GanttChartController<X,Y> extends XYChart<X,Y> {
         setData(data);
     }
 
+    private static ArrayList<Integer> getChildrenArrayId(Object obj) {
+        return ((ExtraData) obj).getChildrenArrayId();
+    }
     private static String getStyleClass( Object obj) {
         return ((ExtraData) obj).getStyleClass();
     }
 
-    private static double getlength( Object obj) {
-        return ((ExtraData) obj).getlength();
+    private static double getLength( Object obj) {
+        return ((ExtraData) obj).getLength();
     }
 
     @Override protected void layoutPlotChildren() {
@@ -71,6 +95,7 @@ public class GanttChartController<X,Y> extends XYChart<X,Y> {
             Series<X,Y> series = getData().get(seriesIndex);
 
             Iterator<Data<X,Y>> iter = getDisplayedDataIterator(series);
+
             while(iter.hasNext()) {
                 Data<X,Y> item = iter.next();
                 double x = getXAxis().getDisplayPosition(item.getXValue());
@@ -88,16 +113,18 @@ public class GanttChartController<X,Y> extends XYChart<X,Y> {
                     if (block instanceof StackPane) {
                         StackPane region = (StackPane)item.getNode();
                         if (region.getShape() == null) {
-                            ellipse = new Rectangle( getlength(item.getExtraValue()), getBlockHeight());
+                            ellipse = new Rectangle( getLength(item.getExtraValue()), getBlockHeight());
                         } else if (region.getShape() instanceof Rectangle) {
                             ellipse = (Rectangle)region.getShape();
                         } else {
                             return;
                         }
 
-                        ellipse.setWidth(getlength( item.getExtraValue()) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getXAxis()).getScale()) : 1));
+
+                        ellipse.setWidth(getLength( item.getExtraValue()) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getXAxis()).getScale()) : 1));
                         //ellipse.setWidth(((getWidth() - 120)/(d.getdiff()*1.15))*20);
                         ellipse.setHeight(getBlockHeight() * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getYAxis()).getScale()) : 1));
+
                         y -= getBlockHeight() / 2.0;
 
                         // Note: workaround for RT-7689 - saw this in ProgressControlSkin
@@ -109,12 +136,90 @@ public class GanttChartController<X,Y> extends XYChart<X,Y> {
                         region.setCenterShape(false);
                         region.setCacheShape(false);
 
+
+                        regions.add(region);
+                        widths.add(ellipse.getWidth());
+                        height=ellipse.getHeight();
+                        xArray.add(x);
+                        yArray.add(y);
+                        childrenId.add(getChildrenArrayId(item.getExtraValue()));
+
+
+
                         block.setLayoutX(x);
                         block.setLayoutY(y);
                     }
                 }
             }
         }
+
+        for (int i = 0; i < 5; i++) {
+            if(f){
+                break;
+            }
+//            ArrayList<Line> lines=new ArrayList<>();
+//            ArrayList<Pane> arrowPanes=new ArrayList<>();
+            if(childrenId.get(i).get(0)!=-1){
+                for (int j = 0; j < childrenId.get(i).size(); j++) {
+                    int chId=childrenId.get(i).get(j);
+
+                    Line line = new Line(xArray.get(i)+116+widths.get(i),yArray.get(i)+40+height/2,xArray.get(chId)+116+widths.get(chId)/2,yArray.get(i)+40+height/2);
+//                    lines.add(line);
+
+                    Pane arrowPane = new Pane();
+//                    arrowPanes.add(arrowPane);
+
+                    if(yArray.get(i)+40+height/2<yArray.get(chId)+40){
+                        drawArrowLine(xArray.get(chId)+116+widths.get(chId)/2, yArray.get(i)+40+height/2, xArray.get(chId)+116+widths.get(chId)/2, yArray.get(chId)+40, arrowPane);
+                    }
+                    else {
+                        drawArrowLine(xArray.get(chId)+116+widths.get(chId)/2, yArray.get(i)+40+height/2, xArray.get(chId)+116+widths.get(chId)/2, yArray.get(chId)+40+height, arrowPane);
+                    }
+
+                    Pane root = new Pane();
+                    root.getChildren().addAll(line,arrowPane);
+                    panes.add(root);
+
+                    this.getChildren().add(panes.get(panes.size()-1));
+                }
+            }
+            if(i==4){
+                f=true;
+            }
+
+        }
+
+
+
+
+    }
+
+    public static void drawArrowLine(double startX, double startY, double endX, double endY, Pane pane) {
+        // get the slope of the line and find its angle
+        double slope = (startY - endY) / (startX - endX);
+        double lineAngle = Math.atan(slope);
+
+        double arrowAngle = startX > endX ? Math.toRadians(225) : -Math.toRadians(45);
+
+        Line line = new Line(startX, startY, endX, endY);
+
+        double lineLength = Math.sqrt(Math.pow(startX - endX, 2) + Math.pow(startY - endY, 2));
+        double arrowLength = lineLength / 10;
+
+        // create the arrow legs
+        Line arrow1 = new Line();
+        arrow1.setStartX(line.getEndX());
+        arrow1.setStartY(line.getEndY());
+        arrow1.setEndX(line.getEndX() + arrowLength * Math.cos(lineAngle - arrowAngle));
+        arrow1.setEndY(line.getEndY() + arrowLength * Math.sin(lineAngle - arrowAngle));
+
+        Line arrow2 = new Line();
+        arrow2.setStartX(line.getEndX());
+        arrow2.setStartY(line.getEndY());
+        arrow2.setEndX(line.getEndX() + arrowLength * Math.cos(lineAngle + arrowAngle));
+        arrow2.setEndY(line.getEndY() + arrowLength * Math.sin(lineAngle + arrowAngle));
+
+        pane.getChildren().addAll(line, arrow1, arrow2);
     }
 
     public double getBlockHeight() {

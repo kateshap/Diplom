@@ -1,9 +1,6 @@
 package com.example.diploma.controllers;
 
-import com.example.diploma.DateAxis;
-import com.example.diploma.GanttChartController;
-import com.example.diploma.Project;
-import com.example.diploma.Task;
+import com.example.diploma.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,6 +16,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -32,6 +30,9 @@ import java.time.ZoneId;
 import java.util.*;
 
 public class ProjectInfoController {
+
+    @FXML
+    private AnchorPane paneField;
 
     @FXML
     private TableView<Task> tableview;
@@ -108,13 +109,36 @@ public class ProjectInfoController {
         ArrayList<java.util.Date> ProjectDates = new ArrayList<java.util.Date>();
         List<Date> beginDates = new ArrayList<>();
         List<Date> executeDates = new ArrayList<>();
-        ArrayList<String> TaskNames = new ArrayList<>();
+        ArrayList<String> taskNames = new ArrayList<>();
+        ArrayList<ArrayList<Integer> > childrenArrayId = new ArrayList<>();
 
-        for(Task task: tasksByProject){
-            TaskNames.add(task.getTaskName());
-            beginDates.add(Date.from(task.getBeginDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-            executeDates.add(Date.from(task.getExecuteDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        for(int i=0;i<tasksByProject.size();i++){
+            ArrayList<Integer> chId=new ArrayList<>();
+            chId.add(-1);
+            childrenArrayId.add(i,chId);
         }
+
+        for(int i=0;i<tasksByProject.size();i++){
+            taskNames.add(tasksByProject.get(i).getTaskName());
+            beginDates.add(Date.from(tasksByProject.get(i).getBeginDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            executeDates.add(Date.from(tasksByProject.get(i).getExecuteDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            for (int j=0;j<tasksByProject.size();j++) {
+                if (tasksByProject.get(i).getParentId() == tasksByProject.get(j).getTaskId()) {
+                    if(childrenArrayId.get(j).get(0)==-1){
+                        childrenArrayId.get(j).set(0,4-i);
+                    }
+                    else{
+                        childrenArrayId.get(j).add(4-i);
+                    }
+
+                }
+            }
+        }
+
+        Collections.reverse(taskNames);
+        Collections.reverse(beginDates);
+        Collections.reverse(executeDates);
+        Collections.reverse(childrenArrayId);
 
         final DateAxis xAxis = new DateAxis();
         final CategoryAxis yAxis = new CategoryAxis();
@@ -135,7 +159,7 @@ public class ProjectInfoController {
         yAxis.setLabel("");
         yAxis.setTickLabelFill(Color.GREEN);
         yAxis.setTickLabelGap(10);
-        yAxis.setCategories(FXCollections.observableList(TaskNames));
+        yAxis.setCategories(FXCollections.observableList(taskNames));
 
         chart.setTitle("test");
         chart.setLegendVisible(false);
@@ -144,9 +168,13 @@ public class ProjectInfoController {
         for (int i =0; i<tasksByProject.size(); i++) {
             double length = xAxis.getDisplayPositionDate(beginDates.get(i),executeDates.get(i));
             XYChart.Series series = new XYChart.Series();
-            series.getData().add(new XYChart.Data(beginDates.get(i), TaskNames.get(i), new GanttChartController.ExtraData( length, "BLACK")));
+            series.getData().add(new XYChart.Data(beginDates.get(i), taskNames.get(i), new GanttChartController.ExtraData( length, "BLACK", childrenArrayId.get(i))));
             chart.getData().add(series);
         }
+
+
+
+
 
         //chart.getStylesheets().add(getClass().getResource("GanttChart.css").toExternalForm());
 
@@ -281,8 +309,8 @@ public class ProjectInfoController {
         Sender sender = new Sender(socket);
         Request req = new Request(ClientsAction.UPDATETASKPERCENT, task);
         sender.sendRequest(req);
-
     }
+
     public void Rec(ArrayList<Task> tasks) throws IOException {
         if(tasks.isEmpty()){
             return;

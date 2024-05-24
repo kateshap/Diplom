@@ -14,6 +14,15 @@ public class Response {
     ArrayList<Task> tasks=new ArrayList<Task>();
     String Message;
     User user;
+    String userRole;
+
+    public String getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
+    }
 
     public User getUser() {
         return user;
@@ -63,6 +72,11 @@ public class Response {
 
     public Response(ServReaction servReaction) {
         this.servReaction = servReaction;
+    }
+
+    public Response(ServReaction servReaction,String userRole) {
+        this.servReaction = servReaction;
+        this.userRole=userRole;
     }
 
     public ServReaction getServReaction() {

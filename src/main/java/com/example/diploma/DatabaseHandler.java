@@ -55,6 +55,24 @@ public class DatabaseHandler extends Configs{
         return resSet;
     }
 
+    public String getUserRole(User user){
+        String res = new String();
+        ResultSet r = null;
+
+        try {
+            PreparedStatement prSt = dbConnection.prepareStatement("select * from users where login=? and password=?");
+            prSt.setString(1,user.getLogin());
+            prSt.setString(2,user.getPassword());
+            r = prSt.executeQuery();
+
+            res=r.getString("role");
+
+        } catch (SQLException ex) { }
+
+        return res;
+    }
+
+
     public void createProject(Project project, int userId) throws SQLException, ClassNotFoundException {
         String insert = "INSERT INTO "+ Const.PROJECT_TABLE+"("+Const.PROJECT_NAME+","+Const.PROJECT_USER_ID+")"+
                 "VALUES(?,?)";
@@ -173,24 +191,7 @@ public class DatabaseHandler extends Configs{
 
         return res;
     }
-//    public ArrayList<Project> getAllProjects() {//получить все проекты
-//        ArrayList<Project> res = new ArrayList<>();
-//
-//        try {
-//            Statement st = dbConnection.createStatement();
-//            ResultSet r = st.executeQuery("select * from projects ORDER BY name");
-//
-//            while(r.next())
-//            {
-//                var project = new Project(r.getString("name"));
-//                project.setUserId(r.getInt("userid"));
-//                project.setProjectId(r.getInt("projectid"));
-//                res.add(project);
-//            }
-//        } catch (SQLException ex) { }
-//
-//        return res;
-//    }
+
 
     public void addProjectUsers(ProjectUsers projectUsers) throws SQLException, ClassNotFoundException {
         String insert = "INSERT INTO "+ Const.PROJECTUSER_TABLE+"("+Const.PROJECTUSER_ID+","+Const.PROJECTUSER_USER_ID+","+Const.PROJECTUSER_PROJECT_ID+")"+
@@ -342,4 +343,6 @@ public class DatabaseHandler extends Configs{
         prSt.setInt(1, task.getTaskId());
         prSt.executeUpdate();
     }
+
+
 }
