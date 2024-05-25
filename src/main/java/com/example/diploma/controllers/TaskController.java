@@ -1,136 +1,158 @@
 package com.example.diploma.controllers;
 
-import com.example.diploma.Project;
-import com.example.diploma.Task;
-import com.example.diploma.User;
+import com.example.diploma.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import request.ClientsAction;
-import request.Request;
-import request.Response;
-import request.Sender;
+import javafx.stage.WindowEvent;
+import javafx.util.converter.IntegerStringConverter;
+import request.*;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
 
 public class TaskController {
-    @FXML
-    private ListView<String> listField;
 
     @FXML
-    private ComboBox<String> taskForStatusField;
+    private AnchorPane paneField;
 
     @FXML
-    private Button changeStatus;
+    private TableView<Task> tableview;
+
+    @FXML
+    private TableColumn<Task, String> TaskName;
+
+    @FXML
+    private TableColumn<Task, LocalDate> TaskBeginDate;
+
+    @FXML
+    private TableColumn<Task, LocalDate> TaskExecuteDate;
+
+    @FXML
+    private TableColumn<Task, Integer> TaskDuration;
+
+    @FXML
+    private TableColumn<Task, String> TaskStatus;
+
+    @FXML
+    private TableColumn<Task, Integer> TaskPercent;
+
+    @FXML
+    private TableColumn<Task, Integer> TaskDependency;
+
+    @FXML
+    private TableColumn<Task, Integer> TaskProject;
 
 
-    public Socket socket;
-    String userRole;
+    Socket socket;
     Sender sender;
-    ArrayList<String> projectNameByAuthor=new ArrayList<String>();
-    ArrayList<String> projectNameByUser=new ArrayList<String>();
-    ArrayList<String> taskNameByUser=new ArrayList<String>();
-    ArrayList<Project> projectsByAuthor;
-    ArrayList<Project> projectsByUser;
-    ArrayList<Task> tasksByUser;
-    ArrayList<String> userFullName=new ArrayList<String>();
-    ArrayList<String> userFullNameOnCreateProject=new ArrayList<String>();
-    ArrayList<User> users;
-    ArrayList<User> usersOnCreateProject;
     Request req;
     Response msg;
+    Project project;
+    ObservableList<Task> tasksByProject;
+    private String userRole;
 
-    @FXML
-    void createTask(ActionEvent event) throws IOException {
-//        FXMLLoader loader=new FXMLLoader(getClass().getResource("CreateTaskOldVersion.fxml"));
-//        Parent root=loader.load();
-//
-//        TaskController taskController=loader.getController();
-//        taskController.getTasks(socket);
-//
-//        contentPane.getChildren().removeAll();
-//        contentPane.getChildren().setAll(root);
-
-        FXMLLoader fxmlLoader=new FXMLLoader(getClass().getResource("CreateTaskOldVersion.fxml"));
-        Parent root1=(Parent) fxmlLoader.load();
-
-        CreateTaskController сreateTaskController=fxmlLoader.getController();
-        //сreateTaskController.getInfoForTasks(socket);
-
-        Stage stage=new Stage();
-        stage.setScene(new Scene(root1));
-        stage.show();
+    public Sender getSender() {
+        return sender;
     }
 
-    @FXML
-    void initialize() {
-
+    public void setSender(Sender sender) {
+        this.sender = sender;
     }
 
-    public void getTasks(Socket socket, String userRole) throws IOException {
-        this.socket=socket;
+    public Request getReq() {
+        return req;
+    }
+
+    public void setReq(Request req) {
+        this.req = req;
+    }
+
+    public Response getMsg() {
+        return msg;
+    }
+
+    public void setMsg(Response msg) {
+        this.msg = msg;
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+
+    void initTable(Socket socket, String userRole) throws IOException {
+        this.socket = socket;
         this.userRole=userRole;
 
-        sender = new Sender(socket);
-        req = new Request(ClientsAction.GETTASKSBYUSER);
-        sender.sendRequest(req);
-        msg = sender.getResp();
+        TaskName.setCellValueFactory(new PropertyValueFactory<Task, String>("taskName"));
+        TaskBeginDate.setCellValueFactory(new PropertyValueFactory<Task, LocalDate>("beginDate"));
+        TaskExecuteDate.setCellValueFactory(new PropertyValueFactory<Task, LocalDate>("executeDate"));
+        TaskDuration.setCellValueFactory(new PropertyValueFactory<Task, Integer>("duration"));
+        TaskStatus.setCellValueFactory(new PropertyValueFactory<Task, String>("status"));
+        TaskPercent.setCellValueFactory(new PropertyValueFactory<Task, Integer>("percent"));
+        TaskDependency.setCellValueFactory(new PropertyValueFactory<Task, Integer>("parentId"));
+        TaskProject.setCellValueFactory(new PropertyValueFactory<Task, Integer>("projectId"));
 
-        tasksByUser=msg.getTasks();
+        tableview.setEditable(true);
+        TaskStatus.setCellFactory(TextFieldTableCell.forTableColumn());
+        TaskPercent.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
 
-        for (Task task : tasksByUser) {
-            taskNameByUser.add(task.getTaskName());
-        }
-
-        ObservableList<String> allTasks = FXCollections.observableArrayList(taskNameByUser);
-        listField.setItems(allTasks);
-
-
-        sender = new Sender(socket);
-        req = new Request(ClientsAction.GETTASKSBYUSER);
-        sender.sendRequest(req);
-        msg = sender.getResp();
-
-        tasksByUser=msg.getTasks();
-
-        for (Task task : tasksByUser) {
-            taskNameByUser.add(task.getTaskName());
-        }
-
-        ObservableList<String> listTasksByUser = FXCollections.observableArrayList(taskNameByUser);
-        taskForStatusField.setItems(listTasksByUser);
+        loadDataForTable();
     }
 
-    @FXML
-    void change_status(ActionEvent event) {
-        String taskName = taskForStatusField.getSelectionModel().getSelectedItem().toString();
+    void loadDataForTable() throws IOException {
+        tableview.getItems().clear();
 
-        int taskId=0;
+        sender = new Sender(socket);
+        req = new Request(ClientsAction.GETTASKSBYUSER);
+//        req.setProject(project);
+        sender.sendRequest(req);
+        msg = sender.getResp();
 
-        for (Task task : tasksByUser) {
-            if(task.getTaskName().equals(taskName)){
-                taskId=task.getTaskId();
-            }
-        }
-        String status = "выполнена";
+        tasksByProject = FXCollections.observableArrayList(msg.getTasks());
 
-        Task task=new Task();
-        task.setTaskId(taskId);
-        task.setTaskName(taskName);
-        task.setStatus(status);
+        tableview.setItems(tasksByProject);
+    }
+
+
+    public void EditStatus(TableColumn.CellEditEvent<Task, String> taskStringCellEditEvent) {
+        Task task = tableview.getSelectionModel().getSelectedItem();
+        task.setStatus(taskStringCellEditEvent.getNewValue());
 
         Sender sender = new Sender(socket);
-        Request req = new Request(ClientsAction.UPDATESTATUS, task);
+        Request req = new Request(ClientsAction.UPDATETASKSTATUS, task);
+        sender.sendRequest(req);
+    }
+
+    public void EditPercent(TableColumn.CellEditEvent<Task, Integer> taskIntegerCellEditEvent) {
+        Task task = tableview.getSelectionModel().getSelectedItem();
+        task.setPercent(taskIntegerCellEditEvent.getNewValue());
+
+        Sender sender = new Sender(socket);
+        Request req = new Request(ClientsAction.UPDATETASKPERCENT, task);
         sender.sendRequest(req);
     }
 

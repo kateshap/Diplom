@@ -158,7 +158,7 @@ public class DatabaseHandler extends Configs{
             while(r.next())
             {
                 var task = new Task(r.getInt("taskid"),r.getString("name"),new java.sql.Date(r.getDate("begindate").getTime()).toLocalDate(),new java.sql.Date(r.getDate("executedate").getTime()).toLocalDate(),
-                        r.getInt("duration"),r.getInt("projectid"),r.getInt("userid"),r.getString("status"),r.getInt("parentid"),r.getInt("childid"),r.getInt("percent"));
+                        r.getInt("duration"),r.getInt("projectid"),r.getInt("userid"),r.getString("status"),r.getInt("parentid"),r.getInt("childid"),r.getInt("percent"),r.getInt("delay"));
                 res.add(task);
             }
         } catch (SQLException ex) { }
@@ -178,7 +178,28 @@ public class DatabaseHandler extends Configs{
             while(r.next())
             {
                 var task = new Task(r.getInt("taskid"),r.getString("name"),new java.sql.Date(r.getDate("begindate").getTime()).toLocalDate(),new java.sql.Date(r.getDate("executedate").getTime()).toLocalDate(),
-                        r.getInt("duration"),r.getInt("projectid"),r.getInt("userid"),r.getString("status"),r.getInt("parentid"),r.getInt("childid"),r.getInt("percent"));
+                        r.getInt("duration"),r.getInt("projectid"),r.getInt("userid"),r.getString("status"),r.getInt("parentid"),r.getInt("childid"),r.getInt("percent"),r.getInt("delay"));
+                res.add(task);
+            }
+        } catch (SQLException ex) { }
+
+        return res;
+    }
+
+    public ArrayList<Task> getTasksByProjectByUser(int projectId,int userId) {
+        ArrayList<Task> res = new ArrayList<>();
+        ResultSet r = null;
+
+        try {
+            PreparedStatement st = dbConnection.prepareStatement(" select * from tasks where projectid=? and userid=?");
+            st.setInt(1,projectId);
+            st.setInt(2,userId);
+            r = st.executeQuery();
+
+            while(r.next())
+            {
+                var task = new Task(r.getInt("taskid"),r.getString("name"),new java.sql.Date(r.getDate("begindate").getTime()).toLocalDate(),new java.sql.Date(r.getDate("executedate").getTime()).toLocalDate(),
+                        r.getInt("duration"),r.getInt("projectid"),r.getInt("userid"),r.getString("status"),r.getInt("parentid"),r.getInt("childid"),r.getInt("percent"),r.getInt("delay"));
                 res.add(task);
             }
         } catch (SQLException ex) { }
@@ -344,7 +365,7 @@ public class DatabaseHandler extends Configs{
             while(r.next())
             {
                 var task = new Task(r.getInt("taskid"),r.getString("name"),new java.sql.Date(r.getDate("begindate").getTime()).toLocalDate(),new java.sql.Date(r.getDate("executedate").getTime()).toLocalDate(),
-                        r.getInt("duration"),r.getInt("projectid"),r.getInt("userid"),r.getString("status"),r.getInt("parentid"),r.getInt("childid"),r.getInt("percent"));
+                        r.getInt("duration"),r.getInt("projectid"),r.getInt("userid"),r.getString("status"),r.getInt("parentid"),r.getInt("childid"),r.getInt("percent"),r.getInt("delay"));
                 res.add(task);
             }
         } catch (SQLException ex) { }
@@ -360,6 +381,7 @@ public class DatabaseHandler extends Configs{
         prSt.setInt(1, task.getTaskId());
         prSt.executeUpdate();
     }
+
 
 
 }

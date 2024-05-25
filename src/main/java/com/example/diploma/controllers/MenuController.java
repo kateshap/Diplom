@@ -111,6 +111,8 @@ public class MenuController {
         contentPane.getChildren().setAll(root);
     }
 
+
+
     @FXML
     void onProject(ActionEvent event) throws IOException {
         FXMLLoader loader=new FXMLLoader(getClass().getResource("Project.fxml"));
@@ -121,6 +123,22 @@ public class MenuController {
 
         contentPane.getChildren().removeAll();
         contentPane.getChildren().setAll(root);
+    }
+    @FXML
+    void onTask(ActionEvent event) throws IOException {
+        if(userRole.equals("teamManager")){
+            FXMLLoader Loader = new FXMLLoader(getClass().getResource("Task.fxml"));
+            Loader.load();
+
+            TaskController taskController=Loader.getController();
+            taskController.initTable(socket,userRole);
+
+            Parent p = Loader.getRoot();
+            Stage stage = new Stage();
+            Scene scene = new Scene(p);
+            stage.setScene(scene);
+            stage.show();
+        }
     }
 
     @FXML
@@ -136,16 +154,6 @@ public class MenuController {
         contentPane.getChildren().setAll(root);
     }
 
-    @FXML
-    void onTask(ActionEvent event) throws IOException {
-        FXMLLoader loader=new FXMLLoader(getClass().getResource("Task.fxml"));
-        Parent root=loader.load();
 
-        TaskController taskController=loader.getController();
-        taskController.getTasks(socket,userRole);
-
-        contentPane.getChildren().removeAll();
-        contentPane.getChildren().setAll(root);
-    }
 }
 

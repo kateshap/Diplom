@@ -75,28 +75,19 @@ public class ProjectController {
 
     @FXML
     void createProject(ActionEvent event) throws IOException {
-//        FXMLLoader fxmlLoader=new FXMLLoader(getClass().getResource("CreateProject.fxml"));
-//        Parent root1=(Parent) fxmlLoader.load();
-//        Stage stage=new Stage();
-//        stage.setScene(new Scene(root1));
-//        stage.show();
-
         FXMLLoader loader=new FXMLLoader(getClass().getResource("CreateProject.fxml"));
         Parent root=loader.load();
 
         CreateProjectController createProjectController=loader.getController();
         createProjectController.socket=socket;
 
-        //FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("SignIn.fxml"));
         Stage stage=new Stage();
         stage.setScene(new Scene(root));
         stage.show();
     }
 
     @FXML
-    void initialize() throws IOException {
-
-    }
+    void initialize(){}
 
     public void getProjects(Socket socket,String userRole) throws IOException {
         this.socket = socket;

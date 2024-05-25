@@ -10,6 +10,19 @@ public class Task {
     private int duration;
     private int projectId;
     private int userId;
+    private String status;
+    private int parentId;
+    private int childId;
+    private int percent;
+    private int delay;
+
+    public int getDelay() {
+        return delay;
+    }
+
+    public void setDelay(int delay) {
+        this.delay = delay;
+    }
 
     public LocalDate getBeginDate() {
         return beginDate;
@@ -51,23 +64,7 @@ public class Task {
         this.percent = percent;
     }
 
-    private String status;
-    private int parentId;
-    private int childId;
-    private int percent;
-
-    public Task( String taskName, LocalDate beginDate, LocalDate executeDate, int duration, int projectId, int userId, String status, int parentId) {
-        this.taskName = taskName;
-        this.beginDate = beginDate;
-        this.executeDate = executeDate;
-        this.duration = duration;
-        this.projectId = projectId;
-        this.userId = userId;
-        this.status = status;
-        this.parentId = parentId;
-    }
-
-    public Task(int taskId, String taskName, LocalDate beginDate, LocalDate executeDate, int duration, int projectId, int userId, String status, int parentId, int childId, int percent) {
+    public Task(int taskId, String taskName, LocalDate beginDate, LocalDate executeDate, int duration, int projectId, int userId, String status, int parentId, int childId, int percent,int delay) {
         this.taskId = taskId;
         this.taskName = taskName;
         this.beginDate = beginDate;
@@ -79,10 +76,19 @@ public class Task {
         this.parentId = parentId;
         this.childId = childId;
         this.percent = percent;
+        this.delay=delay;
     }
 
-
-
+    public Task( String taskName, LocalDate beginDate, LocalDate executeDate, int duration, int projectId, int userId, String status, int parentId) {
+        this.taskName = taskName;
+        this.beginDate = beginDate;
+        this.executeDate = executeDate;
+        this.duration = duration;
+        this.projectId = projectId;
+        this.userId = userId;
+        this.status = status;
+        this.parentId = parentId;
+    }
 
     public Task(){ }
 

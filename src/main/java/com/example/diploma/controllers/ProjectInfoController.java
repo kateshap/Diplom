@@ -226,10 +226,12 @@ public class ProjectInfoController {
         else if(userRole.equals("teamMember")){
             AddTaskBtn.setVisible(false);
             DeleteTaskBtn.setVisible(false);
+            GanttChartButton.setVisible(false);
 
             tableview.setEditable(true);
             TaskStatus.setCellFactory(TextFieldTableCell.forTableColumn());
             TaskPercent.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+            GanttChartButton.setVisible(false);
         }
 
         loadDataForTable();
@@ -238,13 +240,39 @@ public class ProjectInfoController {
     void loadDataForTable() throws IOException {
         tableview.getItems().clear();
 
-        sender = new Sender(socket);
-        req = new Request(ClientsAction.GETTASKSBYPROJECT);
-        req.setProject(project);
-        sender.sendRequest(req);
-        msg = sender.getResp();
+        if(userRole.equals("manager")){
+            sender = new Sender(socket);
+            req = new Request(ClientsAction.GETTASKSBYPROJECT);
+            req.setProject(project);
+            sender.sendRequest(req);
+            msg = sender.getResp();
 
-        tasksByProject = FXCollections.observableArrayList(msg.getTasks());
+            tasksByProject = FXCollections.observableArrayList(msg.getTasks());
+
+        }
+        else if(userRole.equals("director")){
+            sender = new Sender(socket);
+            req = new Request(ClientsAction.GETTASKSBYPROJECT);
+            req.setProject(project);
+            sender.sendRequest(req);
+            msg = sender.getResp();
+
+            tasksByProject = FXCollections.observableArrayList(msg.getTasks());
+
+        }
+        else if(userRole.equals("teamMember")){
+            sender = new Sender(socket);
+            req = new Request(ClientsAction.GETTASKSBYPROJECTBYUSER);
+            req.setProject(project);
+            sender.sendRequest(req);
+            msg = sender.getResp();
+
+            tasksByProject = FXCollections.observableArrayList(msg.getTasks());
+
+        }
+
+
+
 
         tableview.setItems(tasksByProject);
     }
