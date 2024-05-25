@@ -223,7 +223,7 @@ public class ProjectInfoController {
             DeleteTaskBtn.setVisible(false);
 
         }
-        else if(userRole.equals("user")){
+        else if(userRole.equals("teamMember")){
             AddTaskBtn.setVisible(false);
             DeleteTaskBtn.setVisible(false);
 
@@ -276,7 +276,7 @@ public class ProjectInfoController {
         else if(userRole.equals("director")){
 
         }
-        else if(userRole.equals("user")){
+        else if(userRole.equals("teamMember")){
 
         }
 
@@ -304,7 +304,7 @@ public class ProjectInfoController {
         else if(userRole.equals("director")){
 
         }
-        else if(userRole.equals("user")){
+        else if(userRole.equals("teamMember")){
 
         }
 
