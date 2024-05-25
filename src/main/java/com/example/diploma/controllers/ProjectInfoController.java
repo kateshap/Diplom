@@ -1,6 +1,7 @@
 package com.example.diploma.controllers;
 
 import com.example.diploma.*;
+import com.example.diploma.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -59,10 +60,10 @@ public class ProjectInfoController {
     private TableColumn<Task, Integer> TaskDelay;
 
     @FXML
-    private TableColumn<Task, Integer> TaskDependency;
+    private TableColumn<Task, String> TaskDependency;
 
     @FXML
-    private TableColumn<Task, Integer> TaskUser;
+    private TableColumn<Task, String> TaskUser;
 
     @FXML
     private Button AddTaskBtn;
@@ -127,8 +128,8 @@ public class ProjectInfoController {
         TaskDelay.setCellValueFactory(new PropertyValueFactory<Task, Integer>("delay"));
         TaskStatus.setCellValueFactory(new PropertyValueFactory<Task, String>("status"));
         TaskPercent.setCellValueFactory(new PropertyValueFactory<Task, Integer>("percent"));
-        TaskDependency.setCellValueFactory(new PropertyValueFactory<Task, Integer>("parentId"));
-        TaskUser.setCellValueFactory(new PropertyValueFactory<Task, Integer>("userId"));
+        TaskDependency.setCellValueFactory(new PropertyValueFactory<Task, String>("parentName"));
+        TaskUser.setCellValueFactory(new PropertyValueFactory<Task, String>("userName"));
 
         if(userRole.equals("manager")){
             tableview.setEditable(true);
@@ -137,8 +138,8 @@ public class ProjectInfoController {
             TaskDelay.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
             TaskStatus.setCellFactory(TextFieldTableCell.forTableColumn());
             TaskPercent.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-            TaskDependency.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-            TaskUser.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+            TaskDependency.setCellFactory(TextFieldTableCell.forTableColumn());
+            TaskUser.setCellFactory(TextFieldTableCell.forTableColumn());
         }
         else if(userRole.equals("director")){
             AddTaskBtn.setVisible(false);
@@ -192,9 +193,6 @@ public class ProjectInfoController {
             tasksByProject = FXCollections.observableArrayList(msg.getTasks());
 
         }
-
-
-
 
         tableview.setItems(tasksByProject);
     }
@@ -339,7 +337,7 @@ public class ProjectInfoController {
         for(Task task : tasks){
             for (Task temp : tasksByProject) {
                 if (temp.getTaskId() == task.getParentId()) {
-                    task.setBeginDate(temp.getExecuteDate());
+                    task.setBeginDate(temp.getExecuteDate().plusDays(task.getDelay()));
                     task.setExecuteDate(task.getBeginDate().plusDays(task.getDuration()));
                 }
             }
@@ -352,29 +350,58 @@ public class ProjectInfoController {
         }
     }
 
-    public void EditDependency(TableColumn.CellEditEvent<Task, Integer> taskIntegerCellEditEvent) throws IOException {
+    public void EditDependency(TableColumn.CellEditEvent<Task, String> taskStringCellEditEvent) throws IOException {
         Task task = tableview.getSelectionModel().getSelectedItem();
-        task.setParentId(taskIntegerCellEditEvent.getNewValue());
+        boolean f=false;
 
         for (Task temp : tasksByProject) {
-            if (temp.getTaskId() == task.getParentId()) {
-                task.setBeginDate(temp.getExecuteDate());
+            if (taskStringCellEditEvent.getNewValue().equals(temp.getTaskName())) {
+                task.setParentName(taskStringCellEditEvent.getNewValue());
+                task.setParentId(temp.getTaskId());
+                task.setBeginDate(temp.getExecuteDate().plusDays(task.getDelay()));
                 task.setExecuteDate(task.getBeginDate().plusDays(task.getDuration()));
+                f=true;
             }
         }
+        if(!f){
+            System.out.println("this project name isn't exsist");
+            return;
+        }
 
-            Sender sender = new Sender(socket);
-            Request req = new Request(ClientsAction.UPDATETASKPARENTID, task);
-            sender.sendRequest(req);
-            msg = sender.getResp();
-            Rec(msg.getTasks());
+        Sender sender = new Sender(socket);
+        Request req = new Request(ClientsAction.UPDATETASKPARENTID, task);
+        sender.sendRequest(req);
+        msg = sender.getResp();
+        Rec(msg.getTasks());
 
         loadDataForTable();
     }
 
-    public void EditUser(TableColumn.CellEditEvent<Task, Integer> taskIntegerCellEditEvent) {
+    public void EditUser(TableColumn.CellEditEvent<Task, String> taskStringCellEditEvent) throws IOException {
         Task task = tableview.getSelectionModel().getSelectedItem();
-        task.setUserId(taskIntegerCellEditEvent.getNewValue());
+        boolean f=false;
+        ArrayList<User> users;
+        ArrayList<String> userFullName=new ArrayList();
+
+        req = new Request(ClientsAction.GETUSERS);
+        sender.sendRequest(req);
+        msg = sender.getResp();
+        users=msg.getUsers();
+
+        for (User user : users) {
+            userFullName.add(user.getFullname());
+        }
+
+        for (User user : users) {
+            if (taskStringCellEditEvent.getNewValue().equals(user.getFullname())) {
+                task.setUserName(taskStringCellEditEvent.getNewValue());
+                f=true;
+            }
+        }
+        if(!f){
+            System.out.println("this project name isn't exsist");
+            return;
+        }
 
         Sender sender = new Sender(socket);
         Request req = new Request(ClientsAction.UPDATETASKUSER, task);

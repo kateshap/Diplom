@@ -12,9 +12,36 @@ public class Task {
     private int userId;
     private String status;
     private int parentId;
-    private int childId;
     private int percent;
     private int delay;
+
+    private String parentName;
+    private String userName;
+    private String projectName;
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getParentName() {
+        return parentName;
+    }
+
+    public void setParentName(String parentName) {
+        this.parentName = parentName;
+    }
 
     public int getDelay() {
         return delay;
@@ -48,14 +75,6 @@ public class Task {
         this.parentId = parentId;
     }
 
-    public int getChildId() {
-        return childId;
-    }
-
-    public void setChildId(int childId) {
-        this.childId = childId;
-    }
-
     public int getPercent() {
         return percent;
     }
@@ -64,7 +83,7 @@ public class Task {
         this.percent = percent;
     }
 
-    public Task(int taskId, String taskName, LocalDate beginDate, LocalDate executeDate, int duration, int projectId, int userId, String status, int parentId, int childId, int percent,int delay) {
+    public Task(int taskId, String taskName, LocalDate beginDate, LocalDate executeDate, int duration, int projectId, int userId, String status, int parentId, int percent,int delay) {
         this.taskId = taskId;
         this.taskName = taskName;
         this.beginDate = beginDate;
@@ -74,7 +93,6 @@ public class Task {
         this.userId = userId;
         this.status = status;
         this.parentId = parentId;
-        this.childId = childId;
         this.percent = percent;
         this.delay=delay;
     }

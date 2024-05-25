@@ -59,10 +59,10 @@ public class TaskController {
     private TableColumn<Task, Integer> TaskDelay;
 
     @FXML
-    private TableColumn<Task, Integer> TaskDependency;
+    private TableColumn<Task, String> TaskDependency;
 
     @FXML
-    private TableColumn<Task, Integer> TaskProject;
+    private TableColumn<Task, String> TaskProject;
 
 
     Socket socket;
@@ -117,8 +117,8 @@ public class TaskController {
         TaskDelay.setCellValueFactory(new PropertyValueFactory<Task, Integer>("delay"));
         TaskStatus.setCellValueFactory(new PropertyValueFactory<Task, String>("status"));
         TaskPercent.setCellValueFactory(new PropertyValueFactory<Task, Integer>("percent"));
-        TaskDependency.setCellValueFactory(new PropertyValueFactory<Task, Integer>("parentId"));
-        TaskProject.setCellValueFactory(new PropertyValueFactory<Task, Integer>("projectId"));
+        TaskDependency.setCellValueFactory(new PropertyValueFactory<Task, String>("parentName"));
+        TaskProject.setCellValueFactory(new PropertyValueFactory<Task, String>("projectName"));
 
         tableview.setEditable(true);
         TaskStatus.setCellFactory(TextFieldTableCell.forTableColumn());

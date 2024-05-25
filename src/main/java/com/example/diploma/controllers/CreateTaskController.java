@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import request.ClientsAction;
 import request.Request;
 import request.Response;
@@ -114,6 +115,9 @@ public class CreateTaskController {
         Sender sender = new Sender(socket);
         Request req = new Request(ClientsAction.CREATETASK, task);
         sender.sendRequest(req);
+
+        Stage stage = (Stage) createTaskButton.getScene().getWindow();
+        stage.close();
     }
 
     public void getInfoForTasks(Socket socket,Project project) throws IOException {

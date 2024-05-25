@@ -205,14 +205,14 @@ public class ClientHandler implements Runnable {
                         sender.sendResp(resp);
                         break;
                     }
-                    case GETTASKSBYPROJECTBYUSER:{
-                        ArrayList<Task> tasks;
-                        tasks=model.getDb().getTasksByProjectByUser(msg.getProject().getProjectId(),UserId);
-                        Response resp = new Response(ServReaction.SUCCESS);
-                        resp.setTasks(tasks);
-                        sender.sendResp(resp);
-                        break;
-                    }
+//                    case GETTASKSBYPROJECTBYUSER:{
+//                        ArrayList<Task> tasks;
+//                        tasks=model.getDb().getTasksByProjectByUser(msg.getProject().getProjectId(),UserId);
+//                        Response resp = new Response(ServReaction.SUCCESS);
+//                        resp.setTasks(tasks);
+//                        sender.sendResp(resp);
+//                        break;
+//                    }
 
                 }
             }
