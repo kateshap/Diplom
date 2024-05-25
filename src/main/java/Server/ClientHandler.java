@@ -144,6 +144,16 @@ public class ClientHandler implements Runnable {
                         sender.sendResp(resp);
                         break;
                     }
+                    case UPDATETASKDELAY: {
+                        model.getDb().updateTaskDelay(msg.getTask());
+                        model.getDb().updateTaskBeginDate(msg.getTask());
+                        model.getDb().updateTaskExecuteDate(msg.getTask());
+                        ArrayList<Task> tasks;
+                        tasks=model.getDb().getTasksByParentId(msg.getTask().getTaskId());
+                        Response resp = new Response(ServReaction.SUCCESS);
+                        resp.setTasks(tasks);
+                        sender.sendResp(resp);
+                    }
 
                     case UPDATETASKSTATUS: {
                         model.getDb().updateTaskStatus(msg.getTask());

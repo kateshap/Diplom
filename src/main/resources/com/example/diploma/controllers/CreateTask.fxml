@@ -12,5 +12,6 @@
       <Button fx:id="createTaskButton" layoutX="450.0" layoutY="340.0" mnemonicParsing="false" onAction="#create_task" text="Создать задачу" />
       <TextField fx:id="durationField" layoutX="43.0" layoutY="185.0" prefHeight="31.0" prefWidth="218.0" promptText="Продолжительность задачи" />
       <ComboBox fx:id="dependencyField" layoutX="317.0" layoutY="185.0" prefHeight="31.0" prefWidth="173.0" promptText="Зависимость" />
+      <TextField fx:id="delayField" layoutX="43.0" layoutY="261.0" prefHeight="31.0" prefWidth="218.0" promptText="Задержка" />
    </children>
 </AnchorPane>

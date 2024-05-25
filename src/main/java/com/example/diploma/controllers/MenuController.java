@@ -126,7 +126,7 @@ public class MenuController {
     }
     @FXML
     void onTask(ActionEvent event) throws IOException {
-        if(userRole.equals("teamManager")){
+        if(userRole.equals("teamMember")){
             FXMLLoader Loader = new FXMLLoader(getClass().getResource("Task.fxml"));
             Loader.load();
 

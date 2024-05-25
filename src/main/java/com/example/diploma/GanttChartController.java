@@ -19,12 +19,12 @@ import java.util.Iterator;
 
 public class GanttChartController<X,Y> extends XYChart<X,Y> {
 
-    ArrayList<StackPane> regions=new ArrayList<>(5);
+    ArrayList<StackPane> regions=new ArrayList<>();
     ArrayList<Pane> panes=new ArrayList<>();
-    ArrayList<Double> widths=new ArrayList<>(5);
-    ArrayList<Double> xArray=new ArrayList<>(5);
-    ArrayList<Double> yArray=new ArrayList<>(5);
-    ArrayList<ArrayList<Integer>> childrenId=new ArrayList<>(5);
+    ArrayList<Double> widths=new ArrayList<>();
+    ArrayList<Double> xArray=new ArrayList<>();
+    ArrayList<Double> yArray=new ArrayList<>();
+    ArrayList<ArrayList<Integer>> childrenId=new ArrayList<>();
     double height=0;
     boolean f=false;
 
@@ -136,15 +136,11 @@ public class GanttChartController<X,Y> extends XYChart<X,Y> {
                         region.setCenterShape(false);
                         region.setCacheShape(false);
 
-
-                        regions.add(region);
                         widths.add(ellipse.getWidth());
                         height=ellipse.getHeight();
                         xArray.add(x);
                         yArray.add(y);
                         childrenId.add(getChildrenArrayId(item.getExtraValue()));
-
-
 
                         block.setLayoutX(x);
                         block.setLayoutY(y);
@@ -153,21 +149,14 @@ public class GanttChartController<X,Y> extends XYChart<X,Y> {
             }
         }
 
-        for (int i = 0; i < 5; i++) {
-            if(f){
-                break;
-            }
-//            ArrayList<Line> lines=new ArrayList<>();
-//            ArrayList<Pane> arrowPanes=new ArrayList<>();
+        for (int i = 0; i < widths.size(); i++) {
             if(childrenId.get(i).get(0)!=-1){
                 for (int j = 0; j < childrenId.get(i).size(); j++) {
                     int chId=childrenId.get(i).get(j);
 
                     Line line = new Line(xArray.get(i)+116+widths.get(i),yArray.get(i)+40+height/2,xArray.get(chId)+116+widths.get(chId)/2,yArray.get(i)+40+height/2);
-//                    lines.add(line);
 
                     Pane arrowPane = new Pane();
-//                    arrowPanes.add(arrowPane);
 
                     if(yArray.get(i)+40+height/2<yArray.get(chId)+40){
                         drawArrowLine(xArray.get(chId)+116+widths.get(chId)/2, yArray.get(i)+40+height/2, xArray.get(chId)+116+widths.get(chId)/2, yArray.get(chId)+40, arrowPane);
@@ -183,15 +172,7 @@ public class GanttChartController<X,Y> extends XYChart<X,Y> {
                     this.getChildren().add(panes.get(panes.size()-1));
                 }
             }
-            if(i==4){
-                f=true;
-            }
-
         }
-
-
-
-
     }
 
     public static void drawArrowLine(double startX, double startY, double endX, double endY, Pane pane) {

@@ -56,6 +56,9 @@ public class ProjectInfoController {
     private TableColumn<Task, Integer> TaskPercent;
 
     @FXML
+    private TableColumn<Task, Integer> TaskDelay;
+
+    @FXML
     private TableColumn<Task, Integer> TaskDependency;
 
     @FXML
@@ -112,89 +115,6 @@ public class ProjectInfoController {
         this.socket = socket;
     }
 
-    @FXML
-    void showGanttChart(ActionEvent event) {
-        ArrayList<java.util.Date> ProjectDates = new ArrayList<java.util.Date>();
-        List<Date> beginDates = new ArrayList<>();
-        List<Date> executeDates = new ArrayList<>();
-        ArrayList<String> taskNames = new ArrayList<>();
-        ArrayList<ArrayList<Integer> > childrenArrayId = new ArrayList<>();
-
-        for(int i=0;i<tasksByProject.size();i++){
-            ArrayList<Integer> chId=new ArrayList<>();
-            chId.add(-1);
-            childrenArrayId.add(i,chId);
-        }
-
-        for(int i=0;i<tasksByProject.size();i++){
-            taskNames.add(tasksByProject.get(i).getTaskName());
-            beginDates.add(Date.from(tasksByProject.get(i).getBeginDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-            executeDates.add(Date.from(tasksByProject.get(i).getExecuteDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-            for (int j=0;j<tasksByProject.size();j++) {
-                if (tasksByProject.get(i).getParentId() == tasksByProject.get(j).getTaskId()) {
-                    if(childrenArrayId.get(j).get(0)==-1){
-                        childrenArrayId.get(j).set(0,4-i);
-                    }
-                    else{
-                        childrenArrayId.get(j).add(4-i);
-                    }
-
-                }
-            }
-        }
-
-        Collections.reverse(taskNames);
-        Collections.reverse(beginDates);
-        Collections.reverse(executeDates);
-        Collections.reverse(childrenArrayId);
-
-        final DateAxis xAxis = new DateAxis();
-        final CategoryAxis yAxis = new CategoryAxis();
-
-        final GanttChartController<Date,String> chart = new GanttChartController<>(xAxis,yAxis);
-        xAxis.setLabel("");
-        xAxis.setTickLabelFill(Color.DARKRED);
-        xAxis.setTickLabelGap(10);
-        xAxis.setLowerBound(new GregorianCalendar(2024, Calendar.APRIL, 1).getTime());
-        xAxis.setUpperBound(new GregorianCalendar(2024, Calendar.JUNE, 1).getTime());
-        xAxis.averageTickGap();
-        xAxis.setTickLength(15);
-        xAxis.setMaxWidth(1000);
-        xAxis.setMinWidth(1000);
-        xAxis.setAutoRanging(false);
-        xAxis.setTickLabelRotation(90);
-
-        yAxis.setLabel("");
-        yAxis.setTickLabelFill(Color.GREEN);
-        yAxis.setTickLabelGap(10);
-        yAxis.setCategories(FXCollections.observableList(taskNames));
-
-        chart.setTitle("test");
-        chart.setLegendVisible(false);
-        chart.setBlockHeight(50);
-
-        for (int i =0; i<tasksByProject.size(); i++) {
-            double length = xAxis.getDisplayPositionDate(beginDates.get(i),executeDates.get(i));
-            XYChart.Series series = new XYChart.Series();
-            series.getData().add(new XYChart.Data(beginDates.get(i), taskNames.get(i), new GanttChartController.ExtraData( length, "BLACK", childrenArrayId.get(i))));
-            chart.getData().add(series);
-        }
-
-
-
-
-
-        //chart.getStylesheets().add(getClass().getResource("GanttChart.css").toExternalForm());
-
-        Scene scene  = new Scene(chart,1200,600);
-        //stage = (Stage) GanttChartButton.getScene().getWindow();
-        Stage stage = new Stage();
-        stage.setX(scene.getX()+50);
-        stage.setScene(scene);
-        stage.show();
-
-
-    }
 
     void initTable(Socket socket, String userRole) throws IOException {
         this.socket = socket;
@@ -204,6 +124,7 @@ public class ProjectInfoController {
         TaskBeginDate.setCellValueFactory(new PropertyValueFactory<Task, LocalDate>("beginDate"));
         TaskExecuteDate.setCellValueFactory(new PropertyValueFactory<Task, LocalDate>("executeDate"));
         TaskDuration.setCellValueFactory(new PropertyValueFactory<Task, Integer>("duration"));
+        TaskDelay.setCellValueFactory(new PropertyValueFactory<Task, Integer>("delay"));
         TaskStatus.setCellValueFactory(new PropertyValueFactory<Task, String>("status"));
         TaskPercent.setCellValueFactory(new PropertyValueFactory<Task, Integer>("percent"));
         TaskDependency.setCellValueFactory(new PropertyValueFactory<Task, Integer>("parentId"));
@@ -213,6 +134,7 @@ public class ProjectInfoController {
             tableview.setEditable(true);
             TaskName.setCellFactory(TextFieldTableCell.forTableColumn());
             TaskDuration.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+            TaskDelay.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
             TaskStatus.setCellFactory(TextFieldTableCell.forTableColumn());
             TaskPercent.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
             TaskDependency.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
@@ -227,11 +149,11 @@ public class ProjectInfoController {
             AddTaskBtn.setVisible(false);
             DeleteTaskBtn.setVisible(false);
             GanttChartButton.setVisible(false);
+            GanttChartButton.setVisible(false);
 
             tableview.setEditable(true);
             TaskStatus.setCellFactory(TextFieldTableCell.forTableColumn());
             TaskPercent.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-            GanttChartButton.setVisible(false);
         }
 
         loadDataForTable();
@@ -363,6 +285,27 @@ public class ProjectInfoController {
         loadDataForTable();
     }
 
+    public void EditDelay(TableColumn.CellEditEvent<Task, Integer> taskIntegerCellEditEvent) throws IOException {
+        Task task = tableview.getSelectionModel().getSelectedItem();
+        task.setDelay(taskIntegerCellEditEvent.getNewValue());
+
+        for (Task temp : tasksByProject) {
+            if (temp.getTaskId() == task.getParentId()) {
+                task.setBeginDate(temp.getExecuteDate().plusDays(task.getDelay()));
+                task.setExecuteDate(task.getBeginDate().plusDays(task.getDuration()));
+            }
+        }
+
+        Sender sender = new Sender(socket);
+        Request req = new Request(ClientsAction.UPDATETASKDELAY, task);
+        sender.sendRequest(req);
+
+        msg = sender.getResp();
+        Rec(msg.getTasks());
+
+        loadDataForTable();
+    }
+
     public void EditStatus(TableColumn.CellEditEvent<Task, String> taskStringCellEditEvent) {
         Task task = tableview.getSelectionModel().getSelectedItem();
         task.setStatus(taskStringCellEditEvent.getNewValue());
@@ -437,4 +380,82 @@ public class ProjectInfoController {
         Request req = new Request(ClientsAction.UPDATETASKUSER, task);
         sender.sendRequest(req);
     }
+
+    @FXML
+    void showGanttChart(ActionEvent event) {
+        ArrayList<java.util.Date> ProjectDates = new ArrayList<java.util.Date>();
+        List<Date> beginDates = new ArrayList<>();
+        List<Date> executeDates = new ArrayList<>();
+        ArrayList<String> taskNames = new ArrayList<>();
+        ArrayList<ArrayList<Integer> > childrenArrayId = new ArrayList<>();
+
+        for(int i=0;i<tasksByProject.size();i++){
+            ArrayList<Integer> chId=new ArrayList<>();
+            chId.add(-1);
+            childrenArrayId.add(i,chId);
+        }
+
+        for(int i=0;i<tasksByProject.size();i++){
+            taskNames.add(tasksByProject.get(i).getTaskName());
+            beginDates.add(Date.from(tasksByProject.get(i).getBeginDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            executeDates.add(Date.from(tasksByProject.get(i).getExecuteDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            for (int j=0;j<tasksByProject.size();j++) {
+                if (tasksByProject.get(i).getParentId() == tasksByProject.get(j).getTaskId()) {
+                    if(childrenArrayId.get(j).get(0)==-1){
+                        childrenArrayId.get(j).set(0,tasksByProject.size()-1-i);
+                    }
+                    else{
+                        childrenArrayId.get(j).add(tasksByProject.size()-1-i);
+                    }
+
+                }
+            }
+        }
+
+        Collections.reverse(taskNames);
+        Collections.reverse(beginDates);
+        Collections.reverse(executeDates);
+        Collections.reverse(childrenArrayId);
+
+        final DateAxis xAxis = new DateAxis();
+        final CategoryAxis yAxis = new CategoryAxis();
+
+        final GanttChartController<Date,String> chart = new GanttChartController<>(xAxis,yAxis);
+        xAxis.setLabel("");
+        xAxis.setTickLabelFill(Color.DARKRED);
+        xAxis.setTickLabelGap(10);
+        xAxis.setLowerBound(new GregorianCalendar(2024, Calendar.MAY, 1).getTime());
+        xAxis.setUpperBound(new GregorianCalendar(2024, Calendar.JULY, 1).getTime());
+        xAxis.averageTickGap();
+        xAxis.setTickLength(15);
+        xAxis.setMaxWidth(1000);
+        xAxis.setMinWidth(1000);
+        xAxis.setAutoRanging(false);
+        xAxis.setTickLabelRotation(90);
+
+        yAxis.setLabel("");
+        yAxis.setTickLabelFill(Color.GREEN);
+        yAxis.setTickLabelGap(10);
+        yAxis.setCategories(FXCollections.observableList(taskNames));
+
+        chart.setTitle("test");
+        chart.setLegendVisible(false);
+        chart.setBlockHeight(50);
+
+        for (int i =0; i<tasksByProject.size(); i++) {
+            double length = xAxis.getDisplayPositionDate(beginDates.get(i),executeDates.get(i));
+            XYChart.Series series = new XYChart.Series();
+            series.getData().add(new XYChart.Data(beginDates.get(i), taskNames.get(i), new GanttChartController.ExtraData( length, "BLACK", childrenArrayId.get(i))));
+            chart.getData().add(series);
+        }
+
+        Scene scene  = new Scene(chart,1200,600);
+        Stage stage = new Stage();
+        stage.setX(scene.getX()+50);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+
+
 }

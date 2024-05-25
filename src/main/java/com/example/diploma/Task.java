@@ -79,11 +79,12 @@ public class Task {
         this.delay=delay;
     }
 
-    public Task( String taskName, LocalDate beginDate, LocalDate executeDate, int duration, int projectId, int userId, String status, int parentId) {
+    public Task( String taskName, LocalDate beginDate, LocalDate executeDate, int duration,int delay, int projectId, int userId, String status, int parentId) {
         this.taskName = taskName;
         this.beginDate = beginDate;
         this.executeDate = executeDate;
         this.duration = duration;
+        this.delay=delay;
         this.projectId = projectId;
         this.userId = userId;
         this.status = status;

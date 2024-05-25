@@ -37,6 +37,9 @@ public class CreateTaskController {
     @FXML
     private ComboBox<String> dependencyField;
 
+    @FXML
+    private TextField delayField;
+
     public Socket socket;
     Sender sender;
     ArrayList<String> projectNameByAuthor=new ArrayList<String>();
@@ -57,9 +60,14 @@ public class CreateTaskController {
     void create_task(ActionEvent event) throws IOException {
         String taskName = nameField.getText();
         //LocalDate date = dateField.getValue();
-        String taskNameItem = dependencyField.getSelectionModel().getSelectedItem().toString();
-        String userNameItem = usersField.getSelectionModel().getSelectedItem().toString();
+        if(dependencyField.getSelectionModel().isEmpty()){
+
+        }
+
+        String taskNameItem = dependencyField.getSelectionModel().getSelectedItem();
+        String userNameItem = usersField.getSelectionModel().getSelectedItem();
         String taskDuration=durationField.getText();
+        String taskDelay=delayField.getText();
 
 //        int projectId=0;
 //
@@ -84,13 +92,13 @@ public class CreateTaskController {
         for (Task task : tasksByProject) {
             if(task.getTaskName().equals(taskNameItem)){
                 parentId=task.getTaskId();
-                beginDate=task.getExecuteDate();
+                beginDate=task.getExecuteDate().plusDays(Integer.parseInt(taskDelay));;
                 executeDate= beginDate.plusDays(Integer.parseInt(taskDuration));
 
             }
         }
 
-        Task task=new Task(taskName,beginDate,executeDate, Integer.parseInt(taskDuration), project.getProjectId(),userId,"назначена", parentId);
+        Task task=new Task(taskName,beginDate,executeDate, Integer.parseInt(taskDuration),Integer.parseInt(taskDelay), project.getProjectId(),userId,"назначена", parentId);
 
 
         Sender sender = new Sender(socket);

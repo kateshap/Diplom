@@ -56,6 +56,9 @@ public class TaskController {
     private TableColumn<Task, Integer> TaskPercent;
 
     @FXML
+    private TableColumn<Task, Integer> TaskDelay;
+
+    @FXML
     private TableColumn<Task, Integer> TaskDependency;
 
     @FXML
@@ -111,6 +114,7 @@ public class TaskController {
         TaskBeginDate.setCellValueFactory(new PropertyValueFactory<Task, LocalDate>("beginDate"));
         TaskExecuteDate.setCellValueFactory(new PropertyValueFactory<Task, LocalDate>("executeDate"));
         TaskDuration.setCellValueFactory(new PropertyValueFactory<Task, Integer>("duration"));
+        TaskDelay.setCellValueFactory(new PropertyValueFactory<Task, Integer>("delay"));
         TaskStatus.setCellValueFactory(new PropertyValueFactory<Task, String>("status"));
         TaskPercent.setCellValueFactory(new PropertyValueFactory<Task, Integer>("percent"));
         TaskDependency.setCellValueFactory(new PropertyValueFactory<Task, Integer>("parentId"));

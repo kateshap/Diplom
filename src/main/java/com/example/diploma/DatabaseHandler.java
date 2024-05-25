@@ -264,17 +264,18 @@ public class DatabaseHandler extends Configs{
     }
 
     public void createTask(Task task) throws SQLException, ClassNotFoundException {
-        String insert = "INSERT INTO tasks (name,beginDate,executeDate,duration,projectid,userid,status,parentid) VALUES(?,?,?,?,?,?,?,?)";
+        String insert = "INSERT INTO tasks (name,beginDate,executeDate,duration,delay,projectid,userid,status,parentid) VALUES(?,?,?,?,?,?,?,?,?)";
 
         PreparedStatement prSt = dbConnection.prepareStatement(insert);
         prSt.setString(1,task.getTaskName());
         prSt.setDate(2, Date.valueOf(task.getBeginDate()));
         prSt.setDate(3, Date.valueOf(task.getExecuteDate()));
         prSt.setInt(4,task.getDuration());
-        prSt.setInt(5,task.getProjectId());
-        prSt.setInt(6, task.getUserId());
-        prSt.setString(7,task.getStatus());
-        prSt.setInt(8, task.getParentId());
+        prSt.setInt(5,task.getDelay());
+        prSt.setInt(6,task.getProjectId());
+        prSt.setInt(7, task.getUserId());
+        prSt.setString(8,task.getStatus());
+        prSt.setInt(9, task.getParentId());
         prSt.executeUpdate();
     }
 
@@ -311,6 +312,15 @@ public class DatabaseHandler extends Configs{
 
         PreparedStatement prSt = dbConnection.prepareStatement(update);
         prSt.setInt(1, task.getDuration());
+        prSt.setInt(2, task.getTaskId());
+        prSt.executeUpdate();
+    }
+
+    public void updateTaskDelay(Task task) throws SQLException {
+        String update = "update tasks set delay =? where taskid =?";
+
+        PreparedStatement prSt = dbConnection.prepareStatement(update);
+        prSt.setInt(1, task.getDelay());
         prSt.setInt(2, task.getTaskId());
         prSt.executeUpdate();
     }

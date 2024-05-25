@@ -13,6 +13,7 @@
             <TableColumn fx:id="TaskBeginDate" minWidth="0.0" prefWidth="74.0" text="Дата начала" />
             <TableColumn fx:id="TaskExecuteDate" prefWidth="66.0" text="Дата конца" />
             <TableColumn fx:id="TaskDuration" onEditCommit="#EditDuration" prefWidth="124.0" text="Продолжительность" />
+            <TableColumn fx:id="TaskDelay" onEditCommit="#EditDelay" prefWidth="124.0" text="Задержка" />
             <TableColumn fx:id="TaskStatus" minWidth="6.0" onEditCommit="#EditStatus" prefWidth="55.0" text="Статус" />
             <TableColumn fx:id="TaskPercent" minWidth="6.0" onEditCommit="#EditPercent" prefWidth="113.0" text="Процент выполнения" />
             <TableColumn fx:id="TaskDependency" minWidth="0.0" onEditCommit="#EditDependency" prefWidth="99.0" text="Зависимость" />
