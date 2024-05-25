@@ -131,6 +131,7 @@ public class ProjectInfoController {
         TaskDependency.setCellValueFactory(new PropertyValueFactory<Task, String>("parentName"));
         TaskUser.setCellValueFactory(new PropertyValueFactory<Task, String>("userName"));
 
+
         if(userRole.equals("manager")){
             tableview.setEditable(true);
             TaskName.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -144,13 +145,12 @@ public class ProjectInfoController {
         else if(userRole.equals("director")){
             AddTaskBtn.setVisible(false);
             DeleteTaskBtn.setVisible(false);
-
         }
         else if(userRole.equals("teamMember")){
             AddTaskBtn.setVisible(false);
             DeleteTaskBtn.setVisible(false);
             GanttChartButton.setVisible(false);
-            GanttChartButton.setVisible(false);
+            TaskUser.setVisible(false);
 
             tableview.setEditable(true);
             TaskStatus.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -169,9 +169,6 @@ public class ProjectInfoController {
             req.setProject(project);
             sender.sendRequest(req);
             msg = sender.getResp();
-
-            tasksByProject = FXCollections.observableArrayList(msg.getTasks());
-
         }
         else if(userRole.equals("director")){
             sender = new Sender(socket);
@@ -179,21 +176,17 @@ public class ProjectInfoController {
             req.setProject(project);
             sender.sendRequest(req);
             msg = sender.getResp();
-
-            tasksByProject = FXCollections.observableArrayList(msg.getTasks());
-
         }
         else if(userRole.equals("teamMember")){
             sender = new Sender(socket);
-            req = new Request(ClientsAction.GETTASKSBYPROJECTBYUSER);
-            req.setProject(project);
+            req = new Request(ClientsAction.GETTASKSBYUSER);
+//        req.setProject(project);
             sender.sendRequest(req);
             msg = sender.getResp();
 
-            tasksByProject = FXCollections.observableArrayList(msg.getTasks());
-
         }
 
+        tasksByProject = FXCollections.observableArrayList(msg.getTasks());
         tableview.setItems(tasksByProject);
     }
 
