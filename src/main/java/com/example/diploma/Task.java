@@ -91,6 +91,16 @@ public class Task {
         this.parentId = parentId;
     }
 
+    public Task(String taskName, LocalDate beginDate, LocalDate executeDate, int duration, int projectId, int userId, String status) {
+        this.taskName = taskName;
+        this.beginDate = beginDate;
+        this.executeDate = executeDate;
+        this.duration = duration;
+        this.projectId = projectId;
+        this.userId = userId;
+        this.status = status;
+    }
+
     public Task(){ }
 
     public Task(String taskName, LocalDate executeDate, int projectId, int userId, String status) {

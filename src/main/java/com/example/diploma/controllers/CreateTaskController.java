@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import request.ClientsAction;
 import request.Request;
@@ -40,6 +41,10 @@ public class CreateTaskController {
     @FXML
     private TextField delayField;
 
+    @FXML
+    private DatePicker beginDateField;
+
+
     public Socket socket;
     Sender sender;
     ArrayList<String> projectNameByAuthor=new ArrayList<String>();
@@ -59,23 +64,12 @@ public class CreateTaskController {
     @FXML
     void create_task(ActionEvent event) throws IOException {
         String taskName = nameField.getText();
-        //LocalDate date = dateField.getValue();
-        if(dependencyField.getSelectionModel().isEmpty()){
-
-        }
-
-        String taskNameItem = dependencyField.getSelectionModel().getSelectedItem();
         String userNameItem = usersField.getSelectionModel().getSelectedItem();
         String taskDuration=durationField.getText();
         String taskDelay=delayField.getText();
-
-//        int projectId=0;
-//
-//        for (Project project : projectsByAuthor) {
-//            if(project.getProjectName().equals(taskNameItem)){
-//                projectId=project.getProjectId();
-//            }
-//        }
+        String taskNameItem="";
+        LocalDate date;
+        Task task = null;
 
         int userId=0;
 
@@ -84,22 +78,38 @@ public class CreateTaskController {
                 userId=user.getUserId();
             }
         }
-
         int parentId=0;
         LocalDate beginDate = null;
         LocalDate executeDate = null;
 
-        for (Task task : tasksByProject) {
-            if(task.getTaskName().equals(taskNameItem)){
-                parentId=task.getTaskId();
-                beginDate=task.getExecuteDate().plusDays(Integer.parseInt(taskDelay));;
-                executeDate= beginDate.plusDays(Integer.parseInt(taskDuration));
-
-            }
+        if(dependencyField.getSelectionModel().isEmpty() && beginDateField.getValue().equals(null)){
+            System.out.println("Empty dependencyField and empty datePicker");
+            return;
         }
+        else if(!dependencyField.getSelectionModel().isEmpty() && !beginDateField.getValue().equals(null)){
+            System.out.println("Both fields are filled in");
+            return;
+        }
+        else if(!dependencyField.getSelectionModel().isEmpty()){
+            taskNameItem= dependencyField.getSelectionModel().getSelectedItem();
+            for (Task parTask : tasksByProject) {
+                if(parTask.getTaskName().equals(taskNameItem)){
+                    parentId=parTask.getTaskId();
+                    beginDate=parTask.getExecuteDate().plusDays(Integer.parseInt(taskDelay));
+                    executeDate= beginDate.plusDays(Integer.parseInt(taskDuration));
+                }
+            }
+            task=new Task(taskName,beginDate,executeDate, Integer.parseInt(taskDuration),Integer.parseInt(taskDelay), project.getProjectId(),userId,"назначена", parentId);
+        }
+        else if(!beginDateField.getValue().equals(null)){
+            date= beginDateField.getValue();
 
-        Task task=new Task(taskName,beginDate,executeDate, Integer.parseInt(taskDuration),Integer.parseInt(taskDelay), project.getProjectId(),userId,"назначена", parentId);
+            beginDate=date;
+            executeDate= beginDate.plusDays(Integer.parseInt(taskDuration));
 
+            task=new Task(taskName,beginDate,executeDate, Integer.parseInt(taskDuration), project.getProjectId(),userId,"назначена");
+
+        }
 
         Sender sender = new Sender(socket);
         Request req = new Request(ClientsAction.CREATETASK, task);
