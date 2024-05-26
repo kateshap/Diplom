@@ -12,6 +12,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import request.ClientsAction;
 import request.Request;
 import request.Response;
@@ -95,6 +96,9 @@ public class CreateProjectController {
         Sender sender = new Sender(socket);
         Request req = new Request(ClientsAction.CREATEPROJECT, project);
         sender.sendRequest(req);
+
+        Stage stage = (Stage) beginDateField.getScene().getWindow();
+        stage.close();
     }
 
     @FXML
