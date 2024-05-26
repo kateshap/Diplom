@@ -197,12 +197,15 @@ public class ProjectInfoController {
             Parent root1=(Parent) fxmlLoader.load();
 
             CreateTaskController сreateTaskController=fxmlLoader.getController();
+            //Stage stage = (Stage) tableview.getScene().getWindow();
             сreateTaskController.getInfoForTasks(socket,project);
 
             Stage stage=new Stage();
             stage.setScene(new Scene(root1));
-            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                public void handle(WindowEvent we) {
+            stage.setOnHiding(new EventHandler<WindowEvent>() {
+
+                @Override
+                public void handle(WindowEvent event) {
                     System.out.println("Stage is closing");
                     try {
                         loadDataForTable();
@@ -444,8 +447,8 @@ public class ProjectInfoController {
         xAxis.setLabel("");
         xAxis.setTickLabelFill(Color.DARKRED);
         xAxis.setTickLabelGap(10);
-        xAxis.setLowerBound(new GregorianCalendar(2024, Calendar.MAY, 1).getTime());
-        xAxis.setUpperBound(new GregorianCalendar(2024, Calendar.JULY, 1).getTime());
+        xAxis.setLowerBound(new GregorianCalendar(2024, 4, 1).getTime());
+        xAxis.setUpperBound(new GregorianCalendar(2024, 6, 1).getTime());
         xAxis.averageTickGap();
         xAxis.setTickLength(15);
         xAxis.setMaxWidth(1000);
@@ -458,9 +461,9 @@ public class ProjectInfoController {
         yAxis.setTickLabelGap(10);
         yAxis.setCategories(FXCollections.observableList(taskNames));
 
-        chart.setTitle("test");
+        chart.setTitle("Project");
         chart.setLegendVisible(false);
-        chart.setBlockHeight(50);
+        chart.setBlockHeight(30);
 
         for (int i =0; i<tasksByProject.size(); i++) {
             double length = xAxis.getDisplayPositionDate(beginDates.get(i),executeDates.get(i));
@@ -475,7 +478,4 @@ public class ProjectInfoController {
         stage.setScene(scene);
         stage.show();
     }
-
-
-
 }

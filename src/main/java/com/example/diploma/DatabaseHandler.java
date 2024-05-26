@@ -75,12 +75,13 @@ public class DatabaseHandler extends Configs{
 
 
     public void createProject(Project project, int userId) throws SQLException, ClassNotFoundException {
-        String insert = "INSERT INTO "+ Const.PROJECT_TABLE+"("+Const.PROJECT_NAME+","+Const.PROJECT_USER_ID+")"+
-                "VALUES(?,?)";
+        String insert = "insert into projects(name,userid,begindate,program) values(?,?,?,?)";
 
         PreparedStatement prSt = dbConnection.prepareStatement(insert);
         prSt.setString(1,project.getProjectName());
         prSt.setInt(2, userId);
+        prSt.setDate(3, Date.valueOf(project.getBeginDate()));
+        prSt.setString(4,project.getProgram());
         prSt.executeUpdate();
     }
 
@@ -96,7 +97,7 @@ public class DatabaseHandler extends Configs{
 
 
             while(r.next()){
-                var project = new Project(r.getString("name"));
+                var project = new Project(r.getString("name"),r.getString("program"),new java.sql.Date(r.getDate("begindate").getTime()).toLocalDate());
                 project.setUserId(r.getInt("userid"));
                 project.setProjectId(r.getInt("projectid"));
                 res.add(project);
@@ -119,7 +120,7 @@ public class DatabaseHandler extends Configs{
 
             while(r.next())
             {
-                var project = new Project(r.getString("name"));
+                var project = new Project(r.getString("name"),r.getString("program"),new java.sql.Date(r.getDate("begindate").getTime()).toLocalDate());
                 project.setUserId(r.getInt("userid"));
                 project.setProjectId(r.getInt("projectid"));
                 res.add(project);

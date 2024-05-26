@@ -19,6 +19,8 @@ public class Task {
     private String userName;
     private String projectName;
 
+
+
     public String getProjectName() {
         return projectName;
     }
@@ -107,6 +109,17 @@ public class Task {
         this.userId = userId;
         this.status = status;
         this.parentId = parentId;
+    }
+
+    public Task( String taskName, LocalDate beginDate, LocalDate executeDate, int duration,int delay, int projectId, int userId, String status) {
+        this.taskName = taskName;
+        this.beginDate = beginDate;
+        this.executeDate = executeDate;
+        this.duration = duration;
+        this.delay=delay;
+        this.projectId = projectId;
+        this.userId = userId;
+        this.status = status;
     }
 
     public Task(String taskName, LocalDate beginDate, LocalDate executeDate, int duration, int projectId, int userId, String status) {

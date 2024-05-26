@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
+<?import javafx.scene.control.DatePicker?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.diploma.controllers.CreateProjectController">
    <children>
-      <TextField fx:id="textFieldProjectName" layoutX="64.0" layoutY="52.0" promptText="project name" />
-      <Button fx:id="CreateProjectButton" layoutX="74.0" layoutY="188.0" mnemonicParsing="false" onAction="#createNewProject" prefHeight="43.0" prefWidth="153.0" text="Создать проект" />
+      <TextField fx:id="projectNameField" layoutX="64.0" layoutY="52.0" promptText="project name" />
+      <Button fx:id="createProjectButton" layoutX="74.0" layoutY="188.0" mnemonicParsing="false" onAction="#createNewProject" prefHeight="43.0" prefWidth="153.0" text="Создать проект" />
+      <TextField fx:id="programField" layoutX="348.0" layoutY="52.0" />
+      <Label layoutX="64.0" layoutY="24.0" text="Название проекта" />
+      <Label layoutX="348.0" layoutY="24.0" text="Программа проекта" />
+      <DatePicker fx:id="beginDateField" layoutX="64.0" layoutY="129.0" />
    </children>
 </AnchorPane>

@@ -6,12 +6,16 @@ import com.example.diploma.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import request.ClientsAction;
 import request.Request;
 import request.Response;
@@ -83,13 +87,20 @@ public class CreateTaskController {
         LocalDate beginDate = null;
         LocalDate executeDate = null;
 
-        if(dependencyField.getSelectionModel().isEmpty() && beginDateField.getValue().equals(null)){
+        LocalDate date1 = beginDateField.getValue();
+
+        if(dependencyField.getSelectionModel().isEmpty() && date1==null){
             System.out.println("Empty dependencyField and empty datePicker");
             return;
         }
-        else if(!dependencyField.getSelectionModel().isEmpty() && !beginDateField.getValue().equals(null)){
+        else if(!dependencyField.getSelectionModel().isEmpty() && date1!=null){
             System.out.println("Both fields are filled in");
             return;
+        }
+        else if(dependencyField.getSelectionModel().getSelectedItem().equals("Стартовая задача")){
+            beginDate=project.getBeginDate();
+            executeDate= beginDate.plusDays(Integer.parseInt(taskDuration));
+            task=new Task(taskName,beginDate,executeDate, Integer.parseInt(taskDuration),Integer.parseInt(taskDelay), project.getProjectId(),userId,"назначена");
         }
         else if(!dependencyField.getSelectionModel().isEmpty()){
             taskNameItem= dependencyField.getSelectionModel().getSelectedItem();
@@ -102,7 +113,7 @@ public class CreateTaskController {
             }
             task=new Task(taskName,beginDate,executeDate, Integer.parseInt(taskDuration),Integer.parseInt(taskDelay), project.getProjectId(),userId,"назначена", parentId);
         }
-        else if(!beginDateField.getValue().equals(null)){
+        else if(date1!=null){
             date= beginDateField.getValue();
 
             beginDate=date;
@@ -116,11 +127,13 @@ public class CreateTaskController {
         Request req = new Request(ClientsAction.CREATETASK, task);
         sender.sendRequest(req);
 
+
         Stage stage = (Stage) createTaskButton.getScene().getWindow();
         stage.close();
+
     }
 
-    public void getInfoForTasks(Socket socket,Project project) throws IOException {
+    public void getInfoForTasks(Socket socket, Project project) throws IOException {
         this.socket=socket;
         this.project=project;
 
@@ -131,6 +144,7 @@ public class CreateTaskController {
         msg = sender.getResp();
 
         tasksByProject=msg.getTasks();
+        taskNameByProject.add("Стартовая задача");
 
         for (Task task : tasksByProject) {
             taskNameByProject.add(task.getTaskName());
@@ -150,7 +164,6 @@ public class CreateTaskController {
         }
 
         ObservableList<String> userItems = FXCollections.observableArrayList(userFullName);
-        usersField.setItems(userItems);//для задач
-
+        usersField.setItems(userItems);
     }
 }

@@ -63,7 +63,7 @@ public class GanttChartController<X,Y> extends XYChart<X,Y> {
         }
     }
 
-    private double blockHeight = 16;
+    private double blockHeight = 30;
 
     public GanttChartController(@NamedArg("xAxis") Axis<X> xAxis, @NamedArg("yAxis") Axis<Y> yAxis) {
         this(xAxis, yAxis, FXCollections.<Series<X, Y>>observableArrayList());
@@ -121,6 +121,9 @@ public class GanttChartController<X,Y> extends XYChart<X,Y> {
                         }
 
 
+
+                        ellipse.setArcWidth(30.0);
+                        ellipse.setArcHeight(20.0);
                         ellipse.setWidth(getLength( item.getExtraValue()) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getXAxis()).getScale()) : 1));
                         //ellipse.setWidth(((getWidth() - 120)/(d.getdiff()*1.15))*20);
                         ellipse.setHeight(getBlockHeight() * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getYAxis()).getScale()) : 1));
@@ -180,12 +183,12 @@ public class GanttChartController<X,Y> extends XYChart<X,Y> {
         double slope = (startY - endY) / (startX - endX);
         double lineAngle = Math.atan(slope);
 
-        double arrowAngle = startX > endX ? Math.toRadians(225) : -Math.toRadians(45);
+        double arrowAngle = startX > endX ? Math.toRadians(100) : -Math.toRadians(40);
 
         Line line = new Line(startX, startY, endX, endY);
 
         double lineLength = Math.sqrt(Math.pow(startX - endX, 2) + Math.pow(startY - endY, 2));
-        double arrowLength = lineLength / 10;
+        double arrowLength = 8;
 
         // create the arrow legs
         Line arrow1 = new Line();

@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import request.ClientsAction;
@@ -18,23 +19,37 @@ import request.Sender;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class CreateProjectController {
-    @FXML
-    private TextField textFieldProjectName;
+//    @FXML
+//    private TextField textFieldProjectName;
+//
+//    @FXML
+//    private Button CreateProjectButton;
+//
+//    @FXML
+//    private ComboBox<?> usersFieldOnCreateProject;
+//
+//    @FXML
+//    private ComboBox<?> projectsFieldOnCreateProject;
+//
+//    @FXML
+//    private Button AddUserButton;
 
     @FXML
-    private Button CreateProjectButton;
+    private TextField projectNameField;
 
     @FXML
-    private ComboBox<?> usersFieldOnCreateProject;
+    private Button createProjectButton;
 
     @FXML
-    private ComboBox<?> projectsFieldOnCreateProject;
+    private TextField programField;
 
     @FXML
-    private Button AddUserButton;
+    private DatePicker beginDateField;
+
 
     public Socket socket;
     Sender sender;
@@ -71,9 +86,11 @@ public class CreateProjectController {
 
     @FXML
     void createNewProject(ActionEvent event) {
-        String projectName = textFieldProjectName.getText();
+        String projectName = projectNameField.getText();
+        String program = programField.getText();
+        LocalDate date = beginDateField.getValue();
 
-        Project project=new Project(projectName);
+        Project project=new Project(projectName,program,date);
 
         Sender sender = new Sender(socket);
         Request req = new Request(ClientsAction.CREATEPROJECT, project);
