@@ -206,9 +206,34 @@ public class ClientHandler implements Runnable {
                         sender.sendResp(resp);
                         break;
                     }
+
+                    case GETKEYTASKSBYDIRECTOR:{
+                        ArrayList<Task> tasks;
+                        tasks=model.getDb().getKeyTasksByDirector(UserId);
+                        Response resp = new Response(ServReaction.SUCCESS);
+                        resp.setTasks(tasks);
+                        sender.sendResp(resp);
+                        break;
+                    }
                     case GETPROGRAMSCOUNTPROJECTS :{
                         ArrayList<Queries> queries;
                         queries=model.getDb().getProgramsCountProjects(UserId);
+                        Response resp = new Response();
+                        resp.setQueries(queries);
+                        sender.sendResp(resp);
+                        break;
+                    }
+                    case GETPROJECTSCOMPLETEDTASKS :{
+                        ArrayList<Queries> queries;
+                        queries=model.getDb().getProjectsCompletedTasks(UserId);
+                        Response resp = new Response();
+                        resp.setQueries(queries);
+                        sender.sendResp(resp);
+                        break;
+                    }
+                    case GETUSERSCOUNTPROJECTS :{
+                        ArrayList<Queries> queries;
+                        queries=model.getDb().getUsersCountProjects(UserId);
                         Response resp = new Response();
                         resp.setQueries(queries);
                         sender.sendResp(resp);

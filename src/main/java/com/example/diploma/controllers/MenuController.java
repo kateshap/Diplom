@@ -6,12 +6,9 @@ import com.example.diploma.Task;
 import com.example.diploma.User;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
@@ -19,7 +16,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import request.ClientsAction;
 import request.Request;
 import request.Response;
 import request.Sender;
@@ -140,11 +136,11 @@ public class MenuController {
             stage.show();
         }
         if(userRole.equals("director")){
-            FXMLLoader Loader = new FXMLLoader(getClass().getResource("AnalysisByProject.fxml"));
+            FXMLLoader Loader = new FXMLLoader(getClass().getResource("AnalysisByProjects.fxml"));
             Loader.load();
 
-            AnalysisByProjectController analysisByProjectController=Loader.getController();
-            analysisByProjectController.getQueries(socket,userRole);
+            AnalysisByProjectsController analysisByProjectsController =Loader.getController();
+            analysisByProjectsController.getQueries(socket,userRole);
 
             Parent p = Loader.getRoot();
             Stage stage = new Stage();

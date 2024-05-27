@@ -86,7 +86,7 @@ public class DatabaseHandler extends Configs{
     }
 
 
-    public ArrayList<Project> getProjectsByAuthor(int iserId) {//получить все проекты для выпадающего списка по руководителю проекта
+    public ArrayList<Project> getProjectsByAuthor(int iserId) {
         ArrayList<Project> res = new ArrayList<>();
         ResultSet r = null;
 
@@ -107,7 +107,33 @@ public class DatabaseHandler extends Configs{
         return res;
     }
 
-    public ArrayList<Project> getProjectsByUser(int userId) {//получить все проекты участника для вкладки
+    public ArrayList<Task> getKeyTasksByDirector(int userId) {
+        ArrayList<Task> res = new ArrayList<>();
+        ResultSet r = null;
+
+        try {
+            PreparedStatement st = dbConnection.prepareStatement("SELECT  t1.fullname as fullname, tasks.*\n" +
+                    "\tfrom tasks\n" +
+                    "    left join users as t1 on tasks.userid=t1.userid\n" +
+                    "\twhere tasks.key=1 and tasks.projectid in (select projectid \n" +
+                    "\t\t\t\t\t\t\t\t\t\t\tfrom projects \n" +
+                    "                                            where userid=?)");
+            st.setInt(1,userId);
+            r = st.executeQuery();
+
+
+            while(r.next()){
+                var task = new Task(r.getInt("taskid"),r.getString("name"),new java.sql.Date(r.getDate("begindate").getTime()).toLocalDate(),new java.sql.Date(r.getDate("executedate").getTime()).toLocalDate(),
+                        r.getInt("duration"),r.getInt("projectid"),r.getInt("userid"),r.getString("status"),r.getInt("parentid"),r.getInt("percent"),r.getInt("delay"));
+                task.setUserName(r.getString("fullname"));
+                res.add(task);
+            }
+        } catch (SQLException ex) { }
+
+        return res;
+    }
+
+    public ArrayList<Project> getProjectsByUser(int userId) {
         ArrayList<Project> res = new ArrayList<>();
         ResultSet r = null;
 
@@ -183,7 +209,7 @@ public class DatabaseHandler extends Configs{
         return res;
     }
 
-    public ArrayList<User> getUsersByProject(Project project) {//получить всех участников выбранного проекта для вкладки
+    public ArrayList<User> getUsersByProject(Project project) {
         ArrayList<User> res = new ArrayList<>();
         ResultSet r = null;
 
@@ -366,7 +392,7 @@ public class DatabaseHandler extends Configs{
         prSt.executeUpdate();
     }
 
-    public ArrayList<Queries> getProgramsCountProjects(int iserId) {//получить все проекты для выпадающего списка по руководителю проекта
+    public ArrayList<Queries> getProgramsCountProjects(int iserId) {
         ArrayList<Queries> res = new ArrayList<>();
         ResultSet r = null;
 
@@ -381,6 +407,57 @@ public class DatabaseHandler extends Configs{
 
             while(r.next()){
                 var query = new Queries(r.getString("program"),r.getInt("count"));
+                res.add(query);
+            }
+        } catch (SQLException ex) { }
+
+        return res;
+    }
+
+    public ArrayList<Queries> getProjectsCompletedTasks(int iserId) {
+        ArrayList<Queries> res = new ArrayList<>();
+        ResultSet r = null;
+
+        try {
+            PreparedStatement st = dbConnection.prepareStatement(" select t1.name, t2.done, t2.notdone from projects as t1\n" +
+                                        "right join (select t.projectid,sum(case when t.status=\"выполнена\" then 1 else 0 end) as done, \n" +
+                                        "sum(case when t.status<> \"выполнена\" then 1 else 0 end) as notdone from tasks as t \n" +
+                                        "where t.projectid in (select projectid from projects where userid=?) group by t.projectid) as t2\n" +
+                                        "on t1.projectid = t2.projectid");
+            st.setInt(1,iserId);
+            r = st.executeQuery();
+
+            while(r.next()){
+                var query = new Queries(r.getString("name"),r.getInt("done"),r.getInt("notdone"));
+                res.add(query);
+            }
+        } catch (SQLException ex) { }
+
+        return res;
+    }
+
+    public ArrayList<Queries> getUsersCountProjects(int iserId) {
+        ArrayList<Queries> res = new ArrayList<>();
+        ResultSet r = null;
+
+        try {
+            PreparedStatement st = dbConnection.prepareStatement(" select users.fullname, t.countProjects \n" +
+                                                                    "\tfrom users\n" +
+                                                                    "    right join \n" +
+                                                                    "(select tasks.userid, count(tasks.projectid) as countProjects\n" +
+                                                                    "from tasks left join users on tasks.userid=users.userid \n" +
+                                                                    "and  users.role=\"teamMember\"\n" +
+                                                                    "where tasks.projectid in (select projectid \n" +
+                                                                    "\t\t\t\t\t\t\tfrom projects \n" +
+                                                                    "\t\t\t\t\t\t\twhere userid=?)\n" +
+                                                                    "group by tasks.userid) as t on users.userid=t.userid");
+            st.setInt(1,iserId);
+            r = st.executeQuery();
+
+            while(r.next()){
+                var query = new Queries();
+                query.setProjectsCount(r.getInt("countProjects"));
+                query.setUser(r.getString("fullname"));
                 res.add(query);
             }
         } catch (SQLException ex) { }

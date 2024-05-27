@@ -18,6 +18,7 @@
                 <TableColumn fx:id="TaskPercent" minWidth="6.0" onEditCommit="#EditPercent" prefWidth="113.0" text="Процент выполнения" />
                 <TableColumn fx:id="TaskDependency" minWidth="0.0"  prefWidth="99.0" text="Зависимость" />
                 <TableColumn fx:id="TaskProject" prefWidth="124.0" text="Проект" />
+                <TableColumn fx:id="TaskUser" prefWidth="124.0" text="Исполнитель" />
             </columns>
         </TableView>
     </children>
