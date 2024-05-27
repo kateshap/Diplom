@@ -139,6 +139,19 @@ public class MenuController {
             stage.setScene(scene);
             stage.show();
         }
+        if(userRole.equals("director")){
+            FXMLLoader Loader = new FXMLLoader(getClass().getResource("AnalysisByProject.fxml"));
+            Loader.load();
+
+            AnalysisByProjectController analysisByProjectController=Loader.getController();
+            analysisByProjectController.getQueries(socket,userRole);
+
+            Parent p = Loader.getRoot();
+            Stage stage = new Stage();
+            Scene scene = new Scene(p);
+            stage.setScene(scene);
+            stage.show();
+        }
     }
 
     @FXML

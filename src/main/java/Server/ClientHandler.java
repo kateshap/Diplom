@@ -1,6 +1,7 @@
 package Server;
 
 import com.example.diploma.Project;
+import com.example.diploma.Queries;
 import com.example.diploma.Task;
 import com.example.diploma.User;
 import com.google.gson.Gson;
@@ -205,14 +206,14 @@ public class ClientHandler implements Runnable {
                         sender.sendResp(resp);
                         break;
                     }
-//                    case GETTASKSBYPROJECTBYUSER:{
-//                        ArrayList<Task> tasks;
-//                        tasks=model.getDb().getTasksByProjectByUser(msg.getProject().getProjectId(),UserId);
-//                        Response resp = new Response(ServReaction.SUCCESS);
-//                        resp.setTasks(tasks);
-//                        sender.sendResp(resp);
-//                        break;
-//                    }
+                    case GETPROGRAMSCOUNTPROJECTS :{
+                        ArrayList<Queries> queries;
+                        queries=model.getDb().getProgramsCountProjects(UserId);
+                        Response resp = new Response();
+                        resp.setQueries(queries);
+                        sender.sendResp(resp);
+                        break;
+                    }
 
                 }
             }

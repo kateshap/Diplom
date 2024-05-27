@@ -183,29 +183,6 @@ public class DatabaseHandler extends Configs{
         return res;
     }
 
-//    public ArrayList<Task> getTasksByProjectByUser(int projectId,int userId) {
-//        ArrayList<Task> res = new ArrayList<>();
-//        ResultSet r = null;
-//
-//        try {
-//            PreparedStatement st = dbConnection.prepareStatement(" select * from tasks where projectid=? and userid=?");
-//            st.setInt(1,projectId);
-//            st.setInt(2,userId);
-//            r = st.executeQuery();
-//
-//            while(r.next())
-//            {
-//                var task = new Task(r.getInt("taskid"),r.getString("name"),new java.sql.Date(r.getDate("begindate").getTime()).toLocalDate(),new java.sql.Date(r.getDate("executedate").getTime()).toLocalDate(),
-//                        r.getInt("duration"),r.getInt("projectid"),r.getInt("userid"),r.getString("status"),r.getInt("parentid"),r.getInt("percent"),r.getInt("delay"));
-//                res.add(task);
-//            }
-//        } catch (SQLException ex) { }
-//
-//        return res;
-//    }
-
-
-
     public ArrayList<User> getUsersByProject(Project project) {//получить всех участников выбранного проекта для вкладки
         ArrayList<User> res = new ArrayList<>();
         ResultSet r = null;
@@ -387,6 +364,28 @@ public class DatabaseHandler extends Configs{
         PreparedStatement prSt = dbConnection.prepareStatement(delete);
         prSt.setInt(1, task.getTaskId());
         prSt.executeUpdate();
+    }
+
+    public ArrayList<Queries> getProgramsCountProjects(int iserId) {//получить все проекты для выпадающего списка по руководителю проекта
+        ArrayList<Queries> res = new ArrayList<>();
+        ResultSet r = null;
+
+        try {
+            PreparedStatement st = dbConnection.prepareStatement(" SELECT program, COUNT(program) as count\n" +
+                                                                    "\tFROM projects\n" +
+                                                                    "    WHERE userid=?\n" +
+                                                                    "\tGROUP BY program");
+            st.setInt(1,iserId);
+            r = st.executeQuery();
+
+
+            while(r.next()){
+                var query = new Queries(r.getString("program"),r.getInt("count"));
+                res.add(query);
+            }
+        } catch (SQLException ex) { }
+
+        return res;
     }
 
 

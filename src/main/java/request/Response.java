@@ -1,6 +1,7 @@
 package request;
 
 import com.example.diploma.Project;
+import com.example.diploma.Queries;
 import com.example.diploma.Task;
 import com.example.diploma.User;
 
@@ -9,12 +10,16 @@ import java.util.ArrayList;
 public class Response {
     ServReaction servReaction;
     ArrayList<Project> projects=new ArrayList<Project>();
-
     ArrayList<User> users=new ArrayList<User>();
     ArrayList<Task> tasks=new ArrayList<Task>();
+    ArrayList<Queries> queries=new ArrayList<>();
+
     String Message;
     User user;
     String userRole;
+
+    public Response() {
+    }
 
     public String getUserRole() {
         return userRole;
@@ -77,6 +82,14 @@ public class Response {
     public Response(ServReaction servReaction,String userRole) {
         this.servReaction = servReaction;
         this.userRole=userRole;
+    }
+
+    public ArrayList<Queries> getQueries() {
+        return queries;
+    }
+
+    public void setQueries(ArrayList<Queries> queries) {
+        this.queries = queries;
     }
 
     public ServReaction getServReaction() {
