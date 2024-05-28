@@ -13,12 +13,38 @@ public class Response {
     ArrayList<User> users=new ArrayList<User>();
     ArrayList<Task> tasks=new ArrayList<Task>();
     ArrayList<Queries> queries=new ArrayList<>();
+    Project project;
 
     String Message;
     User user;
     String userRole;
 
     public Response() {
+    }
+
+    public Response(Project project) {
+        this.project=project;
+    }
+
+    public Response(ServReaction servReaction) {
+        this.servReaction = servReaction;
+    }
+
+    public Response(ServReaction servReaction,String userRole) {
+        this.servReaction = servReaction;
+        this.userRole=userRole;
+    }
+
+    public Response(ArrayList<Project> projects) {
+        this.projects = projects;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     public String getUserRole() {
@@ -53,8 +79,6 @@ public class Response {
         this.tasks = tasks;
     }
 
-    public Response(ServReaction success, User user) {}
-
     public ArrayList<User> getUsers() {
         return users;
     }
@@ -63,25 +87,12 @@ public class Response {
         this.users = users;
     }
 
-    public Response(ArrayList<Project> projects) {
-        this.projects = projects;
-    }
-
     public ArrayList<Project> getProjects() {
         return projects;
     }
 
     public void setProjects(ArrayList<Project> projects) {
         this.projects = projects;
-    }
-
-    public Response(ServReaction servReaction) {
-        this.servReaction = servReaction;
-    }
-
-    public Response(ServReaction servReaction,String userRole) {
-        this.servReaction = servReaction;
-        this.userRole=userRole;
     }
 
     public ArrayList<Queries> getQueries() {

@@ -511,4 +511,77 @@ public class DatabaseHandler extends Configs{
 
         return res;
     }
+
+    public Project getCardInfo(int projectId) {
+        Project res = null;
+        ResultSet r = null;
+
+        try {
+            PreparedStatement st = dbConnection.prepareStatement(" select t2.name as projectName,t2.begindate as begindate,t2.executedate as executedate,t2.program as projectProgram,users.fullname as dirName, t3.fullname as manName\n" +
+                    "\tfrom (select projects.name,projects.begindate,executedate, projects.program,projectusers.userid as dir,pu.userid as man\n" +
+                    "\t\t\tfrom projects\n" +
+                    "\t\t\tleft join (select projectid, max(executedate) as executedate\n" +
+                    "\t\t\t\t\t\tfrom tasks\n" +
+                    "\t\t\t\t\t\tgroup by projectid) as t on projects.projectid=t.projectid\n" +
+                    "\t\t   left join projectusers on projects.projectid=projectusers.projectid and projectusers.role=\"director\"\n" +
+                    "\t\t   left join projectusers as pu on projects.projectid=pu.projectid and pu.role=\"manager\"\n" +
+                    "\t\t   where projects.projectid=?) as t2\n" +
+                    "\t\t\t   left join users on t2.dir=users.userid\n" +
+                    "\t\t\t   left join users as t3 on t2.man=t3.userid\n");
+            st.setInt(1,projectId);
+            r = st.executeQuery();
+
+            r.next();
+
+            res = new Project(r.getString("projectName"),new java.sql.Date(r.getDate("begindate").getTime()).toLocalDate(),new java.sql.Date(r.getDate("executedate").getTime()).toLocalDate(),r.getString("projectProgram"),r.getString("dirName"),r.getString("manName"));
+                
+        } catch (SQLException ex) { }
+
+        return res;
+    }
+
+    public Project getCardTasksCount(int projectId) {
+        Project res = null;
+        ResultSet r = null;
+
+        try {
+            PreparedStatement st = dbConnection.prepareStatement(" select count(*) as tasksCount\n" +
+                                                                        "from tasks\n" +
+                                                                        "where projectid=?");
+            st.setInt(1,projectId);
+            r = st.executeQuery();
+
+            r.next();
+
+            res = new Project();
+            res.setTasksCount(r.getInt("tasksCount"));
+
+        } catch (SQLException ex) { }
+
+        return res;
+    }
+
+    public Project getCardTeamMembers(int projectId) {
+        Project res = null;
+        ResultSet r = null;
+
+        try {
+            PreparedStatement st = dbConnection.prepareStatement(" select DISTINCT  users.fullname as fullname\n" +
+                                                                        "from tasks\n" +
+                                                                        "right join users on tasks.userid=users.userid\n" +
+                                                                        "where projectid=?");
+            st.setInt(1,projectId);
+            r = st.executeQuery();
+            res = new Project();
+            ArrayList<String> teamMembers = new ArrayList<>();
+            while(r.next())
+            {
+                teamMembers.add(r.getString("fullname"));
+            }
+            res.setTeamMembers(teamMembers);
+            
+        } catch (SQLException ex) { }
+
+        return res;
+    }
 }

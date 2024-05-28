@@ -257,6 +257,28 @@ public class ClientHandler implements Runnable {
                         sender.sendResp(resp);
                         break;
                     }
+                    case GETCARDINFO:{
+                        Project project;
+                        project=model.getDb().getCardInfo(msg.getProject().getProjectId());
+                        Response resp = new Response(project);
+                        sender.sendResp(resp);
+                        break;
+                    }
+
+                    case GETCARDTASKSCOUNT:{
+                        Project project;
+                        project=model.getDb().getCardTasksCount(msg.getProject().getProjectId());
+                        Response resp = new Response(project);
+                        sender.sendResp(resp);
+                        break;
+                    }
+                    case GETCARDTEAMMEMBERS:{
+                        Project project;
+                        project=model.getDb().getCardTeamMembers(msg.getProject().getProjectId());
+                        Response resp = new Response(project);
+                        sender.sendResp(resp);
+                        break;
+                    }
 
                 }
             }

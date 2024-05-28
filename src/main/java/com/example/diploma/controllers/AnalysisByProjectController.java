@@ -9,10 +9,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import request.ClientsAction;
 import request.Request;
 import request.Response;
@@ -42,6 +41,44 @@ public class AnalysisByProjectController {
 
     @FXML
     private ComboBox<String> projectComboBox;
+
+    @FXML
+    private AnchorPane projectСardPane;
+
+    @FXML
+    private Label projectName;
+
+    @FXML
+    private Label projectDir;
+
+    @FXML
+    private Label projectMan;
+
+    @FXML
+    private Label dateDayBegin;
+
+    @FXML
+    private Label dateMonthBegin;
+
+    @FXML
+    private Label dateYearBegin;
+
+    @FXML
+    private Label dateDayExecute;
+
+    @FXML
+    private Label dateMonthExecute;
+
+    @FXML
+    private Label dateYearExecute;
+
+    @FXML
+    private Label tasksCount;
+
+    @FXML
+    private Label projectProgram;
+    @FXML
+    private ListView<String> teamMembersList;
 
 
     Socket socket;
@@ -115,6 +152,7 @@ public class AnalysisByProjectController {
         TaskUser.setCellValueFactory(new PropertyValueFactory<Task, String>("userName"));
 
         loadDataForTable();
+        loadDataForCard();
     }
 
     @FXML
@@ -146,6 +184,56 @@ public class AnalysisByProjectController {
         }
 
         loadDataForTable();
+        loadDataForCard();
+    }
+
+    void loadDataForCard() throws IOException {
+        sender = new Sender(socket);
+        req = new Request(ClientsAction.GETCARDINFO);
+        req.setProject(curProject);
+        sender.sendRequest(req);
+        msg = sender.getResp();
+
+        projectName.setText(msg.getProject().getProjectName());
+        projectDir.setText(msg.getProject().getDirectorName());
+        projectMan.setText(msg.getProject().getManagerName());
+        dateDayBegin.setText(String.valueOf(msg.getProject().getBeginDate().getDayOfMonth()));
+        dateMonthBegin.setText(String.valueOf(msg.getProject().getBeginDate().getMonth()));
+        dateYearBegin.setText(String.valueOf(msg.getProject().getBeginDate().getYear()));
+        dateDayExecute.setText(String.valueOf(msg.getProject().getExecuteDate().getDayOfMonth()));
+        dateMonthExecute.setText(String.valueOf(msg.getProject().getExecuteDate().getMonth()));
+        dateYearExecute.setText(String.valueOf(msg.getProject().getExecuteDate().getYear()));
+        projectProgram.setText(msg.getProject().getProgram());
+
+        sender = new Sender(socket);
+        req = new Request(ClientsAction.GETCARDTASKSCOUNT);
+        req.setProject(curProject);
+        sender.sendRequest(req);
+        msg = sender.getResp();
+
+        tasksCount.setText(String.valueOf(msg.getProject().getTasksCount()));
+
+        sender = new Sender(socket);
+        req = new Request(ClientsAction.GETCARDTEAMMEMBERS);
+        req.setProject(curProject);
+        sender.sendRequest(req);
+        msg = sender.getResp();
+
+
+
+//        for(String teamMember: msg.getProject().getTeamMembers()){
+//            teamMembersList
+//        }
+
+        ObservableList<String> allProjects = FXCollections.observableArrayList(msg.getProject().getTeamMembers());
+        teamMembersList.setItems(allProjects);//список всех проектов (как руководителя и участника)
+
+
+
+        //tasksCount.setText(String.valueOf(msg.getProject().getTasksCount()));
+
+
+
     }
 
     void loadDataForTable() throws IOException {
