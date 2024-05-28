@@ -10,6 +10,8 @@ public class Queries {
    Integer completedTasks;
    Integer outstandingTasks;
 
+   Integer tasksCount;
+
    String user;
 
     public Queries(String program, Integer projectsCount) {
@@ -32,7 +34,6 @@ public class Queries {
     public void setUser(String user) {
         this.user = user;
     }
-
 
     public String getProject() {
         return project;
@@ -73,6 +74,12 @@ public class Queries {
     public void setProjectsCount(Integer projectsCount) {
         this.projectsCount = projectsCount;
     }
+    public Integer getTasksCount() {
+        return tasksCount;
+    }
 
+    public void setTasksCount(Integer tasksCount) {
+        this.tasksCount = tasksCount;
+    }
 
 }

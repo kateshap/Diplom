@@ -139,7 +139,7 @@ public class MenuController {
             FXMLLoader Loader = new FXMLLoader(getClass().getResource("AnalysisByProjects.fxml"));
             Loader.load();
 
-            AnalysisByProjectsController analysisByProjectsController =Loader.getController();
+            AnalysisByProjectsController analysisByProjectsController = Loader.getController();
             analysisByProjectsController.getQueries(socket,userRole);
 
             Parent p = Loader.getRoot();
@@ -152,15 +152,28 @@ public class MenuController {
 
     @FXML
     void onSettings(ActionEvent event) throws IOException {
-        FXMLLoader loader=new FXMLLoader(getClass().getResource("Settings.fxml"));
-        Parent root=loader.load();
+        if(userRole.equals("director")){
+            FXMLLoader Loader = new FXMLLoader(getClass().getResource("AnalysisByProject.fxml"));
+            Loader.load();
 
-        SettingsController settingsController=loader.getController();
-        settingsController.socket=socket;
-        settingsController.userRole=userRole;
+            AnalysisByProjectController analysisByProjectController = Loader.getController();
+            analysisByProjectController.getQueries(socket,userRole);
 
-        contentPane.getChildren().removeAll();
-        contentPane.getChildren().setAll(root);
+            Parent p = Loader.getRoot();
+            Stage stage = new Stage();
+            Scene scene = new Scene(p);
+            stage.setScene(scene);
+            stage.show();
+        }
+//        FXMLLoader loader=new FXMLLoader(getClass().getResource("Settings.fxml"));
+//        Parent root=loader.load();
+//
+//        SettingsController settingsController=loader.getController();
+//        settingsController.socket=socket;
+//        settingsController.userRole=userRole;
+//
+//        contentPane.getChildren().removeAll();
+//        contentPane.getChildren().setAll(root);
     }
 
 

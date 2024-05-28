@@ -86,13 +86,13 @@ public class DatabaseHandler extends Configs{
     }
 
 
-    public ArrayList<Project> getProjectsByAuthor(int iserId) {
+    public ArrayList<Project> getProjectsByAuthor(int userId) {
         ArrayList<Project> res = new ArrayList<>();
         ResultSet r = null;
 
         try {
             PreparedStatement st = dbConnection.prepareStatement("select * from projects where " + Const.PROJECT_USER_ID+"=?");
-            st.setInt(1,iserId);
+            st.setInt(1,userId);
             r = st.executeQuery();
 
 
@@ -436,7 +436,7 @@ public class DatabaseHandler extends Configs{
         return res;
     }
 
-    public ArrayList<Queries> getUsersCountProjects(int iserId) {
+    public ArrayList<Queries> getUsersCountProjects(int userId) {
         ArrayList<Queries> res = new ArrayList<>();
         ResultSet r = null;
 
@@ -451,7 +451,7 @@ public class DatabaseHandler extends Configs{
                                                                     "\t\t\t\t\t\t\tfrom projects \n" +
                                                                     "\t\t\t\t\t\t\twhere userid=?)\n" +
                                                                     "group by tasks.userid) as t on users.userid=t.userid");
-            st.setInt(1,iserId);
+            st.setInt(1,userId);
             r = st.executeQuery();
 
             while(r.next()){
@@ -465,6 +465,50 @@ public class DatabaseHandler extends Configs{
         return res;
     }
 
+    public ArrayList<Queries> getUsersCountTasks(int projectId) {
+        ArrayList<Queries> res = new ArrayList<>();
+        ResultSet r = null;
 
+        try {
+            PreparedStatement st = dbConnection.prepareStatement(" select users.fullname as fullname, count(tasks.taskid) as countTasks\n" +
+                    "\tfrom tasks\n" +
+                    "\tright join users on tasks.userid=users.userid\n" +
+                    "\twhere projectid=?\n" +
+                    "    group by fullname");
+            st.setInt(1,projectId);
+            r = st.executeQuery();
 
+            while(r.next()){
+                var query = new Queries();
+                query.setTasksCount(r.getInt("countTasks"));
+                query.setUser(r.getString("fullname"));
+                res.add(query);
+            }
+        } catch (SQLException ex) { }
+
+        return res;
+    }
+
+    public ArrayList<Task> getOutstandingTasks(int projectId) {
+        ArrayList<Task> res = new ArrayList<>();
+        ResultSet r = null;
+
+        try {
+            PreparedStatement st = dbConnection.prepareStatement(" select name, tasks.begindate as begindate,tasks.executedate as executedate,users.fullname as fullname\n" +
+                    "from tasks\n" +
+                    "left join users on users.userid=tasks.userid\n" +
+                    "where tasks.projectid=? and status<> \"выполнена\"");
+            st.setInt(1,projectId);
+            r = st.executeQuery();
+
+            while(r.next())
+            {
+                var task = new Task(r.getString("name"),new java.sql.Date(r.getDate("begindate").getTime()).toLocalDate(),new java.sql.Date(r.getDate("executedate").getTime()).toLocalDate());
+                task.setUserName(r.getString("fullname"));
+                res.add(task);
+            }
+        } catch (SQLException ex) { }
+
+        return res;
+    }
 }

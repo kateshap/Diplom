@@ -42,16 +42,7 @@ public class AnalysisByProjectsController {
     private TableColumn<Task, LocalDate> TaskExecuteDate;
 
     @FXML
-    private TableColumn<Task, Integer> TaskDuration;
-
-    @FXML
     private TableColumn<Task, String> TaskStatus;
-
-    @FXML
-    private TableColumn<Task, Integer> TaskPercent;
-
-    @FXML
-    private TableColumn<Task, Integer> TaskDelay;
 
     @FXML
     private TableColumn<Task, String> TaskUser;
@@ -126,18 +117,9 @@ public class AnalysisByProjectsController {
         TaskName.setCellValueFactory(new PropertyValueFactory<Task, String>("taskName"));
         TaskBeginDate.setCellValueFactory(new PropertyValueFactory<Task, LocalDate>("beginDate"));
         TaskExecuteDate.setCellValueFactory(new PropertyValueFactory<Task, LocalDate>("executeDate"));
-        TaskDuration.setCellValueFactory(new PropertyValueFactory<Task, Integer>("duration"));
-        TaskDelay.setCellValueFactory(new PropertyValueFactory<Task, Integer>("delay"));
         TaskStatus.setCellValueFactory(new PropertyValueFactory<Task, String>("status"));
-        TaskPercent.setCellValueFactory(new PropertyValueFactory<Task, Integer>("percent"));
         TaskUser.setCellValueFactory(new PropertyValueFactory<Task, String>("userName"));
 
-        //TaskBeginDate.setVisible(false);
-        //TaskExecuteDate.setVisible(false);
-        TaskDuration.setVisible(false);
-        TaskDelay.setVisible(false);
-        TaskPercent.setVisible(false);
-        //TaskUser.setVisible(false);
 
         loadDataForTable();
 

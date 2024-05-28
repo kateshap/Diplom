@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.diploma.controllers.AnalysisByProjectController"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane prefHeight="656.0" prefWidth="1088.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.diploma.controllers.AnalysisByProjectController">
+   <children>
+      <TableView fx:id="tableView" layoutX="670.0" layoutY="102.0" prefHeight="508.0" prefWidth="396.0">
+          <columns>
+              <TableColumn fx:id="TaskName" prefWidth="104.0" text="Название" />
+              <TableColumn fx:id="TaskBeginDate" minWidth="0.0" prefWidth="74.0" text="Дата начала" />
+              <TableColumn fx:id="TaskExecuteDate" prefWidth="66.0" text="Дата конца" />
+              <TableColumn fx:id="TaskUser" prefWidth="124.0" text="Исполнитель" />
+          </columns>
+      </TableView>
+      <BarChart fx:id="barChartField" layoutX="26.0" layoutY="334.0" prefHeight="297.0" prefWidth="426.0">
+        <xAxis>
+          <CategoryAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </BarChart>
+      <ComboBox fx:id="projectComboBox" layoutX="26.0" layoutY="36.0" onAction="#comboAction" prefWidth="150.0" />
+   </children>
 </AnchorPane>

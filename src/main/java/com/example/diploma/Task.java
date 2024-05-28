@@ -132,6 +132,13 @@ public class Task {
         this.status = status;
     }
 
+    public Task(String taskName, LocalDate beginDate, LocalDate executeDate) {
+        this.taskName = taskName;
+        this.beginDate = beginDate;
+        this.executeDate = executeDate;
+    }
+
+
     public Task(){ }
 
     public Task(String taskName, LocalDate executeDate, int projectId, int userId, String status) {

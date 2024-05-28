@@ -240,6 +240,24 @@ public class ClientHandler implements Runnable {
                         break;
                     }
 
+                    case GETUSERSCOUNTTASKS :{
+                        ArrayList<Queries> queries;
+                        queries=model.getDb().getUsersCountTasks(msg.getProject().getProjectId());
+                        Response resp = new Response();
+                        resp.setQueries(queries);
+                        sender.sendResp(resp);
+                        break;
+                    }
+
+                    case GETOUSTANDINGTASKS :{
+                        ArrayList<Task> tasks;
+                        tasks=model.getDb().getOutstandingTasks(msg.getProject().getProjectId());
+                        Response resp = new Response();
+                        resp.setTasks(tasks);
+                        sender.sendResp(resp);
+                        break;
+                    }
+
                 }
             }
         } catch (IOException | SQLException | ClassNotFoundException ignored) {}
