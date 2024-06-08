@@ -3,8 +3,6 @@ package Server;
 import com.example.diploma.DatabaseHandler;
 import com.example.diploma.Task;
 import com.example.diploma.User;
-import model.Model;
-import model.ModelBuilder;
 import request.Request;
 import request.Response;
 import request.Sender;
@@ -28,13 +26,8 @@ public class Server {
     ArrayList<ClientHandler> allClients = new ArrayList<>();
 
     Sender sender;
-    Model model = ModelBuilder.build();
+    DatabaseHandler dbHandler;
 
-
-
-    public void  bcast(){
-        //allClients.forEach(ClientAtServer::sendInfoToClient);
-    }
 
     public void serverStart(){
         ServerSocket ss;
@@ -43,8 +36,7 @@ public class Server {
             ss = new ServerSocket(port, 2, ip);
             System.out.println("Server start\n");
 
-            DatabaseHandler dbHandler = new DatabaseHandler();
-            model.init(this, dbHandler);
+            dbHandler = new DatabaseHandler();
 
             while(true)
             {
@@ -74,14 +66,14 @@ public class Server {
         //проверка регистрация или вход и разные проверки из этого
         switch (msg.getClientsAction()) {
             case SIGNUP: {
-                model.getDb().signUpUser(msg.getUser());
-                userRole=model.getDb().getUserRole(msg.getUser());
+                dbHandler.signUpUser(msg.getUser());
+                userRole=dbHandler.getUserRole(msg.getUser());
                 resp = new Response(ServReaction.SUCCESS,userRole);
                 break;
             }
             case SIGNIN: {
-                result = model.getDb().getUser(msg.getUser());
-                userRole=model.getDb().getUserRole(msg.getUser());
+                result = dbHandler.getUser(msg.getUser());
+                userRole=dbHandler.getUserRole(msg.getUser());
                 int counter = 0;
 
                 while (result.next()) {
@@ -103,9 +95,9 @@ public class Server {
 
         sender.sendResp(resp);
         if (resp.getServReaction() == ServReaction.SUCCESS) {
-            ClientHandler c = new ClientHandler(sock, msg.getUser().getFirstName(),allClients);
+            ClientHandler c = new ClientHandler(sock, msg.getUser().getFirstName(),allClients,dbHandler);
 
-            result = model.getDb().getUser(msg.getUser());
+            result = dbHandler.getUser(msg.getUser());
             result.next();
             c.setUserName(result.getString("firstname"));
             c.setUserId(result.getInt("userid"));

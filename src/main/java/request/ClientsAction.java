@@ -1,7 +1,5 @@
 package request;
 
-import com.example.diploma.User;
-
 public enum ClientsAction {
     SIGNUP,
     SIGNIN,
@@ -34,5 +32,4 @@ public enum ClientsAction {
     GETCARDINFO,
     GETCARDTASKSCOUNT,
     GETCARDTEAMMEMBERS
-
 }

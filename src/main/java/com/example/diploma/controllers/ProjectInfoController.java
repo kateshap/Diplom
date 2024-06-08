@@ -448,7 +448,7 @@ public class ProjectInfoController {
         xAxis.setTickLabelFill(Color.DARKRED);
         xAxis.setTickLabelGap(10);
         xAxis.setLowerBound(new GregorianCalendar(2024, 4, 1).getTime());
-        xAxis.setUpperBound(new GregorianCalendar(2024, 6, 1).getTime());
+        xAxis.setUpperBound(new GregorianCalendar(2024, 5, 1).getTime());
         xAxis.averageTickGap();
         xAxis.setTickLength(15);
         xAxis.setMaxWidth(1000);
@@ -461,7 +461,7 @@ public class ProjectInfoController {
         yAxis.setTickLabelGap(10);
         yAxis.setCategories(FXCollections.observableList(taskNames));
 
-        chart.setTitle("Project");
+        chart.setTitle("Электромонтаж электропроводки");
         chart.setLegendVisible(false);
         chart.setBlockHeight(30);
 

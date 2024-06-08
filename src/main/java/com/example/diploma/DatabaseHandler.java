@@ -11,16 +11,27 @@ public class DatabaseHandler extends Configs{
     Connection dbConnection;
 
     public DatabaseHandler()  {
-        String connectionString = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName;
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            dbConnection = DriverManager.getConnection(connectionString, dbUser, dbPass);
+            Class.forName("org.postgresql.Driver");
+        String url = "jdbc:postgresql://localhost:5432/diploma";
+        String user = "postgres";
+        String password = "12345";
+            dbConnection = DriverManager.getConnection(url, user, password);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
+//
+//        String connectionString = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName;
+//
+//        try {
+//            Class.forName("com.mysql.jdbc.Driver");
+//            dbConnection = DriverManager.getConnection(connectionString, dbUser, dbPass);
+//        } catch (ClassNotFoundException | SQLException e) {
+//            e.printStackTrace();
+//        }
 
-        System.out.println("Connected to the MySQL successfully");
+
 
     }
 
@@ -392,7 +403,7 @@ public class DatabaseHandler extends Configs{
         prSt.executeUpdate();
     }
 
-    public ArrayList<Queries> getProgramsCountProjects(int iserId) {
+    public ArrayList<Queries> getProgramsCountProjects(int userId) {
         ArrayList<Queries> res = new ArrayList<>();
         ResultSet r = null;
 
@@ -401,7 +412,7 @@ public class DatabaseHandler extends Configs{
                                                                     "\tFROM projects\n" +
                                                                     "    WHERE userid=?\n" +
                                                                     "\tGROUP BY program");
-            st.setInt(1,iserId);
+            st.setInt(1,userId);
             r = st.executeQuery();
 
 
@@ -414,17 +425,17 @@ public class DatabaseHandler extends Configs{
         return res;
     }
 
-    public ArrayList<Queries> getProjectsCompletedTasks(int iserId) {
+    public ArrayList<Queries> getProjectsCompletedTasks(int userId) {
         ArrayList<Queries> res = new ArrayList<>();
         ResultSet r = null;
 
         try {
             PreparedStatement st = dbConnection.prepareStatement(" select t1.name, t2.done, t2.notdone from projects as t1\n" +
-                                        "right join (select t.projectid,sum(case when t.status=\"выполнена\" then 1 else 0 end) as done, \n" +
-                                        "sum(case when t.status<> \"выполнена\" then 1 else 0 end) as notdone from tasks as t \n" +
+                                        "right join (select t.projectid,sum(case when t.status='выполнена' then 1 else 0 end) as done, \n" +
+                                        "sum(case when t.status<> 'выполнена' then 1 else 0 end) as notdone from tasks as t \n" +
                                         "where t.projectid in (select projectid from projects where userid=?) group by t.projectid) as t2\n" +
                                         "on t1.projectid = t2.projectid");
-            st.setInt(1,iserId);
+            st.setInt(1,userId);
             r = st.executeQuery();
 
             while(r.next()){
@@ -442,15 +453,7 @@ public class DatabaseHandler extends Configs{
 
         try {
             PreparedStatement st = dbConnection.prepareStatement(" select users.fullname, t.countProjects \n" +
-                                                                    "\tfrom users\n" +
-                                                                    "    right join \n" +
-                                                                    "(select tasks.userid, count(tasks.projectid) as countProjects\n" +
-                                                                    "from tasks left join users on tasks.userid=users.userid \n" +
-                                                                    "and  users.role=\"teamMember\"\n" +
-                                                                    "where tasks.projectid in (select projectid \n" +
-                                                                    "\t\t\t\t\t\t\tfrom projects \n" +
-                                                                    "\t\t\t\t\t\t\twhere userid=?)\n" +
-                                                                    "group by tasks.userid) as t on users.userid=t.userid");
+                                                       "group by tasks.userid) as t on users.userid=t.userid");
             st.setInt(1,userId);
             r = st.executeQuery();
 
@@ -497,7 +500,7 @@ public class DatabaseHandler extends Configs{
             PreparedStatement st = dbConnection.prepareStatement(" select name, tasks.begindate as begindate,tasks.executedate as executedate,users.fullname as fullname\n" +
                     "from tasks\n" +
                     "left join users on users.userid=tasks.userid\n" +
-                    "where tasks.projectid=? and status<> \"выполнена\"");
+                    "where tasks.projectid=? and status<> 'выполнена'");
             st.setInt(1,projectId);
             r = st.executeQuery();
 
@@ -517,17 +520,17 @@ public class DatabaseHandler extends Configs{
         ResultSet r = null;
 
         try {
-            PreparedStatement st = dbConnection.prepareStatement(" select t2.name as projectName,t2.begindate as begindate,t2.executedate as executedate,t2.program as projectProgram,users.fullname as dirName, t3.fullname as manName\n" +
-                    "\tfrom (select projects.name,projects.begindate,executedate, projects.program,projectusers.userid as dir,pu.userid as man\n" +
-                    "\t\t\tfrom projects\n" +
-                    "\t\t\tleft join (select projectid, max(executedate) as executedate\n" +
-                    "\t\t\t\t\t\tfrom tasks\n" +
-                    "\t\t\t\t\t\tgroup by projectid) as t on projects.projectid=t.projectid\n" +
-                    "\t\t   left join projectusers on projects.projectid=projectusers.projectid and projectusers.role=\"director\"\n" +
-                    "\t\t   left join projectusers as pu on projects.projectid=pu.projectid and pu.role=\"manager\"\n" +
-                    "\t\t   where projects.projectid=?) as t2\n" +
-                    "\t\t\t   left join users on t2.dir=users.userid\n" +
-                    "\t\t\t   left join users as t3 on t2.man=t3.userid\n");
+            PreparedStatement st = dbConnection.prepareStatement(" select t2.name as projectName,t2.begindate as begindate,t2.executedate as executedate,t2.program as projectProgram,users.fullname as dirName, t3.fullname as manName" +
+                    " from (select projects.name,projects.begindate,executedate, projects.program,projectusers.userid as dir,pu.userid as man " +
+                    " from projects " +
+                    " left join (select projectid, max(executedate) as executedate " +
+                    " from tasks " +
+                    " group by projectid) as t on projects.projectid=t.projectid " +
+                    " left join projectusers on projects.projectid=projectusers.projectid and projectusers.role='director' " +
+                    " left join projectusers as pu on projects.projectid=pu.projectid and pu.role='manager' " +
+                    " where projects.projectid=?) as t2 " +
+                    " left join users on t2.dir=users.userid " +
+                    " left join users as t3 on t2.man=t3.userid ");
             st.setInt(1,projectId);
             r = st.executeQuery();
 

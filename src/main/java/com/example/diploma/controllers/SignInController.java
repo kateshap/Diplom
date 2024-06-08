@@ -7,7 +7,6 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-import com.example.diploma.Data;
 import com.example.diploma.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -83,7 +82,6 @@ public class SignInController {
         ip = InetAddress.getLocalHost();
         socket = new Socket(ip, port);
 
-        Data.socket=socket;
 
         User user = new User();
         user.setLogin(loginText);

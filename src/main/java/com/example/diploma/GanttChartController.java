@@ -151,21 +151,22 @@ public class GanttChartController<X,Y> extends XYChart<X,Y> {
                 }
             }
         }
+        int interval=180;
 
         for (int i = 0; i < widths.size(); i++) {
             if(childrenId.get(i).get(0)!=-1){
                 for (int j = 0; j < childrenId.get(i).size(); j++) {
                     int chId=childrenId.get(i).get(j);
 
-                    Line line = new Line(xArray.get(i)+116+widths.get(i),yArray.get(i)+40+height/2,xArray.get(chId)+116+widths.get(chId)/2,yArray.get(i)+40+height/2);
+                    Line line = new Line(xArray.get(i)+interval+widths.get(i),yArray.get(i)+40+height/2,xArray.get(chId)+interval+widths.get(chId)/2,yArray.get(i)+40+height/2);
 
                     Pane arrowPane = new Pane();
 
                     if(yArray.get(i)+40+height/2<yArray.get(chId)+40){
-                        drawArrowLine(xArray.get(chId)+116+widths.get(chId)/2, yArray.get(i)+40+height/2, xArray.get(chId)+116+widths.get(chId)/2, yArray.get(chId)+40, arrowPane);
+                        drawArrowLine(xArray.get(chId)+interval+widths.get(chId)/2, yArray.get(i)+40+height/2, xArray.get(chId)+interval+widths.get(chId)/2, yArray.get(chId)+40, arrowPane);
                     }
                     else {
-                        drawArrowLine(xArray.get(chId)+116+widths.get(chId)/2, yArray.get(i)+40+height/2, xArray.get(chId)+116+widths.get(chId)/2, yArray.get(chId)+40+height, arrowPane);
+                        drawArrowLine(xArray.get(chId)+interval+widths.get(chId)/2, yArray.get(i)+40+height/2, xArray.get(chId)+interval+widths.get(chId)/2, yArray.get(chId)+40+height, arrowPane);
                     }
 
                     Pane root = new Pane();

@@ -96,15 +96,7 @@ public class MenuController {
 
     @FXML
     void onProfile(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Profile.fxml"));
-        Parent root = loader.load();
 
-        ProfileController profileController = loader.getController();
-        profileController.socket = socket;
-        profileController.userRole = userRole;
-
-        contentPane.getChildren().removeAll();
-        contentPane.getChildren().setAll(root);
     }
 
 

@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane prefHeight="691.0" prefWidth="1049.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.diploma.controllers.AnalysisByProjectsController">
+<AnchorPane prefHeight="691.0" prefWidth="1049.0" style="-fx-background-color: #FFE2EA#FFE2EA;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.diploma.controllers.AnalysisByProjectsController">
    <children>
       <Pane layoutX="14.0" layoutY="13.0" prefHeight="315.0" prefWidth="413.0">
          <children>
@@ -24,29 +24,29 @@
             </BarChart>
          </children>
       </Pane>
-      <Pane layoutX="14.0" layoutY="362.0" prefHeight="315.0" prefWidth="498.0">
+      <Pane layoutX="14.0" layoutY="315.0" prefHeight="372.0" prefWidth="498.0">
          <children>
-            <StackedBarChart fx:id="StackedBarField" layoutX="-4.0" layoutY="-3.0" prefHeight="321.0" prefWidth="505.0" title="Вып/ невып задачи">
+            <StackedBarChart fx:id="StackedBarField" layoutX="-3.0" legendVisible="false" prefHeight="372.0" prefWidth="505.0" title="Выполненные/ невыполненные работы">
               <xAxis>
                 <CategoryAxis label="Проект" side="BOTTOM" />
               </xAxis>
               <yAxis>
-                <NumberAxis label="Вып/невып задачи" prefHeight="255.0" prefWidth="57.0" side="LEFT" />
+                <NumberAxis label="Работы" prefHeight="255.0" prefWidth="57.0" side="LEFT" />
               </yAxis>
             </StackedBarChart>
          </children>
       </Pane>
-      <Pane layoutX="588.0" layoutY="362.0" prefHeight="300.0" prefWidth="443.0">
+      <Pane layoutX="545.0" layoutY="317.0" prefHeight="380.0" prefWidth="505.0">
          <children>
-            <PieChart fx:id="pieChartField" legendVisible="false" prefHeight="303.0" prefWidth="455.0" />
+            <PieChart fx:id="pieChartField" labelsVisible="false" layoutX="-6.0" prefHeight="380.0" prefWidth="512.0" title="Исполнители" />
          </children></Pane>
-      <TableView fx:id="tableView" layoutX="588.0" layoutY="27.0" prefHeight="315.0" prefWidth="443.0">
+      <TableView fx:id="tableView" layoutX="471.0" layoutY="9.0" prefHeight="298.0" prefWidth="560.0">
           <columns>
-              <TableColumn fx:id="TaskName" prefWidth="104.0" text="Название" />
-              <TableColumn fx:id="TaskBeginDate" minWidth="0.0" prefWidth="74.0" text="Дата начала" />
-              <TableColumn fx:id="TaskExecuteDate" prefWidth="66.0" text="Дата конца" />
-              <TableColumn fx:id="TaskStatus" minWidth="6.0" prefWidth="55.0" text="Статус" />
-              <TableColumn fx:id="TaskUser" prefWidth="124.0" text="Исполнитель" />
+              <TableColumn fx:id="TaskName" prefWidth="123.0" text="Название" />
+              <TableColumn fx:id="TaskBeginDate" minWidth="0.0" prefWidth="107.0" text="Дата начала" />
+              <TableColumn fx:id="TaskExecuteDate" prefWidth="111.0" text="Дата конца" />
+              <TableColumn fx:id="TaskStatus" minWidth="0.0" prefWidth="92.0" text="Статус" />
+              <TableColumn fx:id="TaskUser" prefWidth="126.0" text="Исполнитель" />
           </columns>
       </TableView>
    </children>

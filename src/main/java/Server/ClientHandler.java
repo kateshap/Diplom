@@ -1,12 +1,7 @@
 package Server;
 
-import com.example.diploma.Project;
-import com.example.diploma.Queries;
-import com.example.diploma.Task;
-import com.example.diploma.User;
+import com.example.diploma.*;
 import com.google.gson.Gson;
-import model.Model;
-import model.ModelBuilder;
 import request.Request;
 import request.Response;
 import request.Sender;
@@ -20,13 +15,10 @@ import java.util.ArrayList;
 public class ClientHandler implements Runnable {
     private Socket clientSocket;
     private ArrayList<ClientHandler> clients;
-    private InputStream is;
-    private OutputStream os;
-    private DataInputStream dis;
-    private DataOutputStream dos;
     private Gson gson = new Gson();
     private String UserName;
     private int UserId;
+    DatabaseHandler dbHandler;
 
 
     public int getUserId() {
@@ -45,17 +37,15 @@ public class ClientHandler implements Runnable {
         UserName = userName;
     }
 
-    Model model = ModelBuilder.build();
     Sender sender;
 
-    public ClientHandler(Socket clientSocket, String userName,  ArrayList<ClientHandler> clients) {
+    public ClientHandler(Socket clientSocket, String userName, ArrayList<ClientHandler> clients, DatabaseHandler dbHandler) {
         this.clientSocket = clientSocket;
         this.clients = clients;
-        sender = new Sender(clientSocket);
-        UserName = userName;
+        this.sender = new Sender(clientSocket);
+        this.UserName = userName;
+        this.dbHandler=dbHandler;
     }
-
-
 
     @Override
     public void run() {
@@ -66,26 +56,26 @@ public class ClientHandler implements Runnable {
 
                 switch (msg.getClientsAction()) {
                     case CREATEPROJECT: {
-                        model.getDb().createProject(msg.getProject(), UserId);
+                        dbHandler.createProject(msg.getProject(), UserId);
                         break;
                     }
                     case GETPROJECTSBYAUTHOR:{
                         ArrayList<Project> projects;
-                        projects=model.getDb().getProjectsByAuthor(UserId);
+                        projects=dbHandler.getProjectsByAuthor(UserId);
                         Response resp = new Response(projects);
                         sender.sendResp(resp);
                         break;
                     }
                     case GETPROJECTSBYUSER:{
                         ArrayList<Project> projects;
-                        projects=model.getDb().getProjectsByUser(UserId);
+                        projects=dbHandler.getProjectsByUser(UserId);
                         Response resp = new Response(projects);
                         sender.sendResp(resp);
                         break;
                     }
                     case GETUSERSBYPROJECT:{
                         ArrayList<User> users;
-                        users=model.getDb().getUsersByProject(msg.getProject());
+                        users=dbHandler.getUsersByProject(msg.getProject());
                         Response resp = new Response(ServReaction.SUCCESS);
                         resp.setUsers(users);
                         sender.sendResp(resp);
@@ -93,23 +83,23 @@ public class ClientHandler implements Runnable {
                     }
                     case GETUSERS:{
                         ArrayList<User> users;
-                        users=model.getDb().getAllUsers();
+                        users=dbHandler.getAllUsers();
                         Response resp = new Response(ServReaction.SUCCESS);
                         resp.setUsers(users);
                         sender.sendResp(resp);
                         break;
                     }
                     case CREATETASK: {
-                        model.getDb().createTask(msg.getTask());
+                        dbHandler.createTask(msg.getTask());
                         break;
                     }
                     case ADDPROJECTUSERS: {
-                        model.getDb().addProjectUsers(msg.getProjectUsers());
+                        dbHandler.addProjectUsers(msg.getProjectUsers());
                         break;
                     }
                     case GETTASKSBYUSER:{
                         ArrayList<Task> tasks;
-                        tasks=model.getDb().getTasksByUser(UserId);
+                        tasks=dbHandler.getTasksByUser(UserId);
                         Response resp = new Response(ServReaction.SUCCESS);
                         resp.setTasks(tasks);
                         sender.sendResp(resp);
@@ -119,9 +109,9 @@ public class ClientHandler implements Runnable {
                     case DELETETASK:{
                         ArrayList<Task> tasks;
                         Response resp = new Response(ServReaction.SUCCESS);
-                        tasks=model.getDb().getTasksByParentId(msg.getTask().getTaskId());
+                        tasks=dbHandler.getTasksByParentId(msg.getTask().getTaskId());
                         if(tasks.isEmpty()){
-                            model.getDb().deleteTask(msg.getTask());
+                            dbHandler.deleteTask(msg.getTask());
                             resp.setServReaction(ServReaction.SUCCESS);
                         }
                         else{
@@ -132,44 +122,44 @@ public class ClientHandler implements Runnable {
                     }
 
                     case UPDATETASKNAME: {
-                        model.getDb().updateTaskName(msg.getTask());
+                        dbHandler.updateTaskName(msg.getTask());
                         break;
                     }
                     case UPDATETASKDURATION: {
-                        model.getDb().updateTaskDuration(msg.getTask());
-                        model.getDb().updateTaskExecuteDate(msg.getTask());
+                        dbHandler.updateTaskDuration(msg.getTask());
+                        dbHandler.updateTaskExecuteDate(msg.getTask());
                         ArrayList<Task> tasks;
-                        tasks=model.getDb().getTasksByParentId(msg.getTask().getTaskId());
+                        tasks=dbHandler.getTasksByParentId(msg.getTask().getTaskId());
                         Response resp = new Response(ServReaction.SUCCESS);
                         resp.setTasks(tasks);
                         sender.sendResp(resp);
                         break;
                     }
                     case UPDATETASKDELAY: {
-                        model.getDb().updateTaskDelay(msg.getTask());
-                        model.getDb().updateTaskBeginDate(msg.getTask());
-                        model.getDb().updateTaskExecuteDate(msg.getTask());
+                        dbHandler.updateTaskDelay(msg.getTask());
+                        dbHandler.updateTaskBeginDate(msg.getTask());
+                        dbHandler.updateTaskExecuteDate(msg.getTask());
                         ArrayList<Task> tasks;
-                        tasks=model.getDb().getTasksByParentId(msg.getTask().getTaskId());
+                        tasks=dbHandler.getTasksByParentId(msg.getTask().getTaskId());
                         Response resp = new Response(ServReaction.SUCCESS);
                         resp.setTasks(tasks);
                         sender.sendResp(resp);
                     }
 
                     case UPDATETASKSTATUS: {
-                        model.getDb().updateTaskStatus(msg.getTask());
+                        dbHandler.updateTaskStatus(msg.getTask());
                         break;
                     }
                     case UPDATETASKPERCENT: {
-                        model.getDb().updateTaskPercent(msg.getTask());
+                        dbHandler.updateTaskPercent(msg.getTask());
                         break;
                     }
                     case UPDATETASKPARENTID: {
-                        model.getDb().updateTaskParentId(msg.getTask());
-                        model.getDb().updateTaskBeginDate(msg.getTask());
-                        model.getDb().updateTaskExecuteDate(msg.getTask());
+                        dbHandler.updateTaskParentId(msg.getTask());
+                        dbHandler.updateTaskBeginDate(msg.getTask());
+                        dbHandler.updateTaskExecuteDate(msg.getTask());
                         ArrayList<Task> tasks;
-                        tasks=model.getDb().getTasksByParentId(msg.getTask().getTaskId());
+                        tasks=dbHandler.getTasksByParentId(msg.getTask().getTaskId());
                         Response resp = new Response(ServReaction.SUCCESS);
                         resp.setTasks(tasks);
                         sender.sendResp(resp);
@@ -177,7 +167,7 @@ public class ClientHandler implements Runnable {
                     }
 
                     case UPDATETASKUSER: {
-                        model.getDb().updateTaskUser(msg.getTask());
+                        dbHandler.updateTaskUser(msg.getTask());
                         break;
                     }
 
@@ -200,7 +190,7 @@ public class ClientHandler implements Runnable {
                     }
                     case GETTASKSBYPROJECT:{
                         ArrayList<Task> tasks;
-                        tasks=model.getDb().getTasksByProject(msg.getProject().getProjectId());
+                        tasks=dbHandler.getTasksByProject(msg.getProject().getProjectId());
                         Response resp = new Response(ServReaction.SUCCESS);
                         resp.setTasks(tasks);
                         sender.sendResp(resp);
@@ -209,7 +199,7 @@ public class ClientHandler implements Runnable {
 
                     case GETKEYTASKSBYDIRECTOR:{
                         ArrayList<Task> tasks;
-                        tasks=model.getDb().getKeyTasksByDirector(UserId);
+                        tasks=dbHandler.getKeyTasksByDirector(UserId);
                         Response resp = new Response(ServReaction.SUCCESS);
                         resp.setTasks(tasks);
                         sender.sendResp(resp);
@@ -217,7 +207,7 @@ public class ClientHandler implements Runnable {
                     }
                     case GETPROGRAMSCOUNTPROJECTS :{
                         ArrayList<Queries> queries;
-                        queries=model.getDb().getProgramsCountProjects(UserId);
+                        queries=dbHandler.getProgramsCountProjects(UserId);
                         Response resp = new Response();
                         resp.setQueries(queries);
                         sender.sendResp(resp);
@@ -225,7 +215,7 @@ public class ClientHandler implements Runnable {
                     }
                     case GETPROJECTSCOMPLETEDTASKS :{
                         ArrayList<Queries> queries;
-                        queries=model.getDb().getProjectsCompletedTasks(UserId);
+                        queries=dbHandler.getProjectsCompletedTasks(UserId);
                         Response resp = new Response();
                         resp.setQueries(queries);
                         sender.sendResp(resp);
@@ -233,7 +223,7 @@ public class ClientHandler implements Runnable {
                     }
                     case GETUSERSCOUNTPROJECTS :{
                         ArrayList<Queries> queries;
-                        queries=model.getDb().getUsersCountProjects(UserId);
+                        queries=dbHandler.getUsersCountProjects(UserId);
                         Response resp = new Response();
                         resp.setQueries(queries);
                         sender.sendResp(resp);
@@ -242,7 +232,7 @@ public class ClientHandler implements Runnable {
 
                     case GETUSERSCOUNTTASKS :{
                         ArrayList<Queries> queries;
-                        queries=model.getDb().getUsersCountTasks(msg.getProject().getProjectId());
+                        queries=dbHandler.getUsersCountTasks(msg.getProject().getProjectId());
                         Response resp = new Response();
                         resp.setQueries(queries);
                         sender.sendResp(resp);
@@ -251,7 +241,7 @@ public class ClientHandler implements Runnable {
 
                     case GETOUSTANDINGTASKS :{
                         ArrayList<Task> tasks;
-                        tasks=model.getDb().getOutstandingTasks(msg.getProject().getProjectId());
+                        tasks=dbHandler.getOutstandingTasks(msg.getProject().getProjectId());
                         Response resp = new Response();
                         resp.setTasks(tasks);
                         sender.sendResp(resp);
@@ -259,7 +249,7 @@ public class ClientHandler implements Runnable {
                     }
                     case GETCARDINFO:{
                         Project project;
-                        project=model.getDb().getCardInfo(msg.getProject().getProjectId());
+                        project=dbHandler.getCardInfo(msg.getProject().getProjectId());
                         Response resp = new Response(project);
                         sender.sendResp(resp);
                         break;
@@ -267,14 +257,14 @@ public class ClientHandler implements Runnable {
 
                     case GETCARDTASKSCOUNT:{
                         Project project;
-                        project=model.getDb().getCardTasksCount(msg.getProject().getProjectId());
+                        project=dbHandler.getCardTasksCount(msg.getProject().getProjectId());
                         Response resp = new Response(project);
                         sender.sendResp(resp);
                         break;
                     }
                     case GETCARDTEAMMEMBERS:{
                         Project project;
-                        project=model.getDb().getCardTeamMembers(msg.getProject().getProjectId());
+                        project=dbHandler.getCardTeamMembers(msg.getProject().getProjectId());
                         Response resp = new Response(project);
                         sender.sendResp(resp);
                         break;

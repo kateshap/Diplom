@@ -6,7 +6,6 @@ import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.example.diploma.Data;
 import com.example.diploma.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

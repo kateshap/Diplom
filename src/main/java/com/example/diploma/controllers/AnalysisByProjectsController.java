@@ -4,7 +4,6 @@ import com.example.diploma.Project;
 import com.example.diploma.Queries;
 import com.example.diploma.Task;
 import com.example.diploma.User;
-import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -51,17 +50,6 @@ public class AnalysisByProjectsController {
     Socket socket;
     String userRole;
     Sender sender;
-    ArrayList<String> projectNameByAuthor=new ArrayList<String>();
-    ArrayList<String> projectNameByUser=new ArrayList<String>();
-    ArrayList<Integer> projectIdByUser=new ArrayList<Integer>();
-    ArrayList<String> taskNameByUser=new ArrayList<String>();
-    ArrayList<Project> projectsByAuthor;
-    ArrayList<Project> projectsByUser;
-    ArrayList<Task> tasksByUser;
-    ArrayList<String> userFullName=new ArrayList<String>();
-    ArrayList<String> userFullNameOnCreateProject=new ArrayList<String>();
-    ArrayList<User> users;
-    ArrayList<User> usersOnCreateProject;
     Request req;
     Response msg;
     ArrayList<Queries> programsCountProjects;
@@ -137,13 +125,13 @@ public class AnalysisByProjectsController {
 
         }
 
-        pieChartData.forEach(data ->
-            data.nameProperty().bind(
-                Bindings.concat(
-                        data.getName(), " (", data.pieValueProperty(), ")"
-                )
-            )
-        );
+//        pieChartData.forEach(data ->
+//            data.nameProperty().bind(
+//                Bindings.concat(
+//                        data.getName(), " (", data.pieValueProperty(), ")"
+//                )
+//            )
+//        );
 
 
         pieChartField.getData().addAll(pieChartData);

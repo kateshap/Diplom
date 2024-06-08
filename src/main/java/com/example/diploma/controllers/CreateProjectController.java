@@ -53,19 +53,7 @@ public class CreateProjectController {
 
 
     public Socket socket;
-    Sender sender;
-    ArrayList<String> projectNameByAuthor=new ArrayList<String>();
-    ArrayList<String> projectNameByUser=new ArrayList<String>();
-    ArrayList<String> taskNameByUser=new ArrayList<String>();
-    ArrayList<Project> projectsByAuthor;
-    ArrayList<Project> projectsByUser;
-    ArrayList<Task> tasksByUser;
-    ArrayList<String> userFullName=new ArrayList<String>();
-    ArrayList<String> userFullNameOnCreateProject=new ArrayList<String>();
-    ArrayList<User> users;
-    ArrayList<User> usersOnCreateProject;
-    Request req;
-    Response msg;
+
 
     void initialize() throws IOException {
 //        req = new Request(ClientsAction.GETUSERS);
